@@ -238,12 +238,12 @@ function setupSeverityInteractivity(chartContext) {
   let highestRow = null; // active row with the longest stay
   let lowestRow = null;  // active row with the shortest stay
 
-  /** Three-colour rule on the ACTIVE rows: longest = vermillion, shortest = green, rest = charcoal. */
+  /** Three-colour rule on the ACTIVE rows: longest = vermillion, shortest = green, rest = grey. */
   function rowColour(d) {
     if (!activeGroups.has(d.group)) return "#B0B0B0";
     if (d === highestRow) return PALETTE.VERMILLION;
     if (d === lowestRow) return PALETTE.GREEN;
-    return "#222222";
+    return PALETTE.GREY_CONTEXT; // other active rows: grey context bars, as in the original design
   }
 
   // ---- Tooltip (hover, touch and keyboard focus) ----
@@ -320,7 +320,7 @@ function setupSeverityInteractivity(chartContext) {
       const isActive = activeGroups.has(g);
       const colour = !isActive ? "#8E8A96"
         : (highestRow && highestRow.group === g) ? PALETTE.VERMILLION
-        : (lowestRow && lowestRow.group === g) ? PALETTE.GREEN : "#222222";
+        : (lowestRow && lowestRow.group === g) ? PALETTE.GREEN : PALETTE.GREY_CONTEXT;
       d3.select(`#sev-pill-${safeId}`).style("color", colour).style("border-color", isActive ? colour : "var(--glass-border)");
       d3.select(`#sev-pill-dot-${safeId}`).style("background-color", isActive ? colour : "#B0B0B0").style("opacity", isActive ? 1 : 0.4);
     });
