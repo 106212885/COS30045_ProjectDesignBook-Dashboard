@@ -219,3 +219,122 @@ function setupInteractivity(chartContext) {
   svgParent.on("focus", () => drawTooltip(keypadYear, 0, 0, true));
   svgParent.on("focusout", () => { crosshair.style("opacity", 0); tooltip.style("opacity", 0); });
 }
+
+
+/* ==========================================================================
+   GRAPH 2 INTERACTIVITY: filter pills, KPI cards, colour rule, tooltip
+   Called by renderSeverityChart() in national_roaduser_severity_chart.js.
+   ========================================================================== */
+function setupSeverityInteractivity(chartContext) {
+  const { svgParent, svg, svgWidth, margin, rows, rowGroups, groups, keyText } = chartContext;
+
+  // State is kept on window so the selection survives a resize redraw (same idea as G1)
+  if (!window.severityActiveGroups) window.severityActiveGroups = new Set(groups);
+  const activeGroups = window.severityActiveGroups;
+  let highestRow = null; // active row with the longest stay
+  let lowestRow = null;  // active row with the shortest stay
+
+  /** Three-colour rule on the ACTIVE rows: longest = vermillion, shortest = green, rest = charcoal. */
+  function rowColour(d) {
+    if (!activeGroups.has(d.group)) return "#B0B0B0";
+    if (d === highestRow) return PALETTE.VERMILLION;
+    if (d === lowestRow) return PALETTE.GREEN;
+    return "#222222";
+  }
+
+  // ---- Tooltip (hover, touch and keyboard focus) ----
+  d3.selectAll(".severity-tooltip").remove();
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "a11y-tooltip severity-tooltip")
+    .attr("aria-live", "polite")
+    .style("opacity", 0);
+  const hideTooltip = () => tooltip.style("opacity", 0);
+  function showTooltip(d, left, top) {
+    tooltip.html(
+      `<div style="font-size:1.1rem; font-weight:700; border-bottom:1.5px solid #C3B1E0; padding-bottom:6px; margin-bottom:8px;">${d.roadUser}</div>
+       <div>Group: ${d.group}</div>
+       <div>Hospitalisations: <strong>${d3.format(",")(d.hospitalisations)}</strong></div>
+       <div>Bed days per case: <strong>${d3.format(".1f")(d.bedDaysPerCase)}</strong></div>
+       <div>Cases ending in death: <strong>${d3.format(".2f")(d.diedPct)}%</strong> (${d3.format(",")(d.diedCases)} cases)</div>`
+    ).style("left", left + "px").style("top", top + "px").style("opacity", 1);
+  }
+
+  // ---- Filter pill buttons (same classes as G1) ----
+  const filterContainer = d3.select("#severity-filter-container").html("");
+  filterContainer.append("span").attr("class", "filter-guide-label").text("Filter :");
+  groups.forEach(g => {
+    const safeId = g.replace(/\s+/g, "");
+    const btn = filterContainer.append("button")
+      .attr("id", `sev-pill-${safeId}`).attr("type", "button")
+      .attr("class", `filter-pill ${activeGroups.has(g) ? "active" : ""}`)
+      .attr("aria-pressed", activeGroups.has(g))
+      .on("click", function () {
+        if (activeGroups.has(g)) activeGroups.delete(g); else activeGroups.add(g);
+        d3.select(this).classed("active", activeGroups.has(g)).attr("aria-pressed", activeGroups.has(g));
+        hideTooltip();
+        updateColorsAndKPIs();
+      });
+    btn.append("span").attr("id", `sev-pill-dot-${safeId}`).attr("class", "pill-color-dot").attr("aria-hidden", "true");
+    btn.append("span").text(g);
+  });
+
+  // ---- Recalculate extremes, KPI cards and colours after every filter change ----
+  function setKpi(idVal, idName, val, name, colour) {
+    d3.select(idVal).text(val);
+    d3.select(idName).text(name).style("color", colour);
+  }
+  function updateColorsAndKPIs() {
+    const activeRows = rows.filter(d => activeGroups.has(d.group)); // rows are sorted longest to shortest stay
+    highestRow = activeRows.length ? activeRows[0] : null;
+    lowestRow = activeRows.length > 1 ? activeRows[activeRows.length - 1] : null;
+
+    if (activeRows.length === 0) {
+      d3.select("#g2-kpi-total").text("0");
+      setKpi("#g2-kpi-long-val", "#g2-kpi-long-name", "0", "-", "#5E5A66");
+      setKpi("#g2-kpi-short-val", "#g2-kpi-short-name", "0", "-", "#5E5A66");
+      keyText.text("No road user groups selected. Choose a group above to see its bars.");
+    } else {
+      const shortest = activeRows[activeRows.length - 1];
+      d3.select("#g2-kpi-total").text(d3.format(",")(d3.sum(activeRows, d => d.hospitalisations)));
+      setKpi("#g2-kpi-long-val", "#g2-kpi-long-name", d3.format(".1f")(highestRow.bedDaysPerCase), highestRow.roadUser, PALETTE.VERMILLION);
+      setKpi("#g2-kpi-short-val", "#g2-kpi-short-name", d3.format(".1f")(shortest.bedDaysPerCase), shortest.roadUser, PALETTE.GREEN);
+      keyText.text(lowestRow
+        ? `Highlighted: ${highestRow.roadUser} (longest stays, vermillion) and ${lowestRow.roadUser} (shortest stays, green)`
+        : `Only ${highestRow.roadUser} is shown (longest and shortest stay among the selected groups)`);
+    }
+
+    rowGroups
+      .style("opacity", d => activeGroups.has(d.group) ? 1 : 0.1)
+      .attr("tabindex", d => activeGroups.has(d.group) ? 0 : -1)   // switched-off rows are skipped by Tab
+      .style("pointer-events", d => activeGroups.has(d.group) ? "all" : "none");
+    rowGroups.select(".bar-bed").style("fill", rowColour);
+    rowGroups.select(".bar-death").style("fill", rowColour);
+    rowGroups.select(".row-label").style("font-weight", d => (d === highestRow || d === lowestRow) ? 800 : 500);
+
+    groups.forEach(g => {
+      const safeId = g.replace(/\s+/g, "");
+      const isActive = activeGroups.has(g);
+      const colour = !isActive ? "#8E8A96"
+        : (highestRow && highestRow.group === g) ? PALETTE.VERMILLION
+        : (lowestRow && lowestRow.group === g) ? PALETTE.GREEN : "#222222";
+      d3.select(`#sev-pill-${safeId}`).style("color", colour).style("border-color", isActive ? colour : "var(--glass-border)");
+      d3.select(`#sev-pill-dot-${safeId}`).style("background-color", isActive ? colour : "#B0B0B0").style("opacity", isActive ? 1 : 0.4);
+    });
+  }
+  updateColorsAndKPIs(); // initial synchronisation
+
+  // ---- Hover, touch and keyboard focus on each row ----
+  rowGroups
+    .on("mousemove", function (event, d) {
+      d3.select(this).select(".row-band").style("opacity", 0.25);
+      showTooltip(d, event.pageX + 20, event.pageY - 20);
+    })
+    .on("mouseout", function () { d3.select(this).select(".row-band").style("opacity", 0); hideTooltip(); })
+    .on("focus", function (event, d) {
+      d3.select(this).select(".row-band").style("opacity", 0.25);
+      const r = this.getBoundingClientRect(); // dock the tooltip next to the focused row
+      showTooltip(d, r.left + window.scrollX + r.width * 0.55, r.top + window.scrollY - 10);
+    })
+    .on("blur", function () { d3.select(this).select(".row-band").style("opacity", 0); hideTooltip(); })
+    .on("keydown", (event) => { if (event.key === "Escape") hideTooltip(); });
+  }
