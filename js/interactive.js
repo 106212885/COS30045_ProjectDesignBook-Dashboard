@@ -362,7 +362,7 @@ function setupStateInteractivity(chartContext) {
     if (!activeStates.has(s)) return "#B0B0B0";
     if (s === highestState) return PALETTE.VERMILLION;
     if (s === lowestState) return PALETTE.GREEN;
-    return "#222222";
+    return PALETTE.GREY_CONTEXT; // other active states: grey context lines, as in the original design
   }
   const isExtreme = s => activeStates.has(s) && (s === highestState || s === lowestState);
 
@@ -421,9 +421,9 @@ function setupStateInteractivity(chartContext) {
     states.forEach(s => {
       const isActive = activeStates.has(s);
       const colour = stateColour(s);
-      paths[s].attr("stroke", colour).attr("stroke-width", isActive ? 4 : 2).style("opacity", isActive ? 1 : 0.08);
+      paths[s].attr("stroke", colour).attr("stroke-width", isExtreme(s) ? 4 : 2).style("opacity", isActive ? 1 : 0.08);
       if (isExtreme(s)) paths[s].raise(); // draw the highlighted lines on top
-      labelEls[s].style("fill", colour).style("font-weight", isExtreme(s) ? 800 : 600).style("opacity", isActive ? 1 : 0.2);
+      labelEls[s].style("fill", isExtreme(s) || !isActive ? colour : "#2A2730").style("font-weight", isExtreme(s) ? 800 : 500).style("opacity", isActive ? 1 : 0.2);
       d3.select(`#state-pill-${s}`).style("color", isActive ? colour : "#8E8A96").style("border-color", isActive ? colour : "var(--glass-border)");
       d3.select(`#state-pill-dot-${s}`).style("background-color", colour).style("opacity", isActive ? 1 : 0.4);
     });
