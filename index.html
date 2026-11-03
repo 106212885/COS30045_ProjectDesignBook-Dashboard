@@ -198,10 +198,27 @@
             How many people are hurt and how badly they are hurt are different things. Car occupants make up the biggest share of cases (46.9% in 2021), but <strong>pedestrians suffer the most serious injuries</strong>—staying an average of <strong>9.1 bed days per case</strong> with <strong>2.1% of cases ending in death</strong> (2011–2020), compared with <strong>2.9 bed days</strong> and <strong>0.19%</strong> for pedal cyclists.
           </p>
         </div>
+        <!-- Summary KPI Cards (G2): updated by the chart script -->
+        <div class="grid-4-col" style="margin-bottom: 24px;">
+          <div class="glass-card metric-card">
+            <p class="metric-value" id="g2-kpi-total">0</p>
+            <p class="metric-label">Hospitalisations, selected groups (2011–2020)</p>
+          </div>
+          <div class="glass-card metric-card">
+            <p class="metric-value" id="g2-kpi-long-val" style="color: #D55E00;">0</p>
+            <p class="metric-label">Longest stay (bed days per case): <strong id="g2-kpi-long-name">-</strong></p>
+          </div>
+          <div class="glass-card metric-card highlight-card">
+            <p class="metric-value" id="g2-kpi-short-val" style="color: #009E73;">0</p>
+            <p class="metric-label">Shortest stay (bed days per case): <strong id="g2-kpi-short-name">-</strong></p>
+          </div>
+        </div>
+
         <div class="glass-card">
-          <p style="text-align:center; color: #5E5A66; padding: 40px;">
-            <span aria-hidden="true">👆</span> Hover over a row, or press Tab to move between road users and see exact values.
+          <p style="text-align: center; font-size: 0.9rem; font-style: italic; color: var(--c-text-muted); margin-bottom: 16px;">
+            <span aria-hidden="true">👆</span> Filter road user groups below, or hover over a row / press Tab to see exact values.
           </p>
+          <div id="severity-filter-container" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 24px;"></div>
           <div id="severity-chart-container" style="width: 100%; max-width: 1100px; margin: 0 auto; position: relative;"></div>
           <p style="font-size: 0.85rem; color: var(--c-text-muted); text-align: center; margin-top: 15px;">
             *Death percentages use 2011–2020 only. Died cases are zero in every 2021 row of the source data, which looks like missing data, not a true absence of deaths.
@@ -220,15 +237,27 @@
             A big state will almost always report more raw cases than a small one. Joining BITRE state hospitalisations with ABS Table 4 resident population reveals that in 2021, the <strong>Northern Territory recorded 286.1 hospitalisations per 100,000 people</strong>—more than double <strong>New South Wales (111.2 per 100,000)</strong>.
           </p>
         </div>
-        <div class="glass-card">
-          <p style="text-align:center; color: #5E5A66; padding: 40px;">
-          <!-- Project Stand Up 3-->
-            <span aria-hidden="true">👆</span> Choose a state to compare with the highest state, then hover or use Left &amp; Right arrow keys on the chart.
-          </p>
-          <div class="compare-control">
-            <label for="state-compare-select">Compare with:</label>
-            <select id="state-compare-select"></select>
+        <!-- Summary KPI Cards (G3): updated by the chart script -->
+        <div class="grid-4-col" style="margin-bottom: 24px;">
+          <div class="glass-card metric-card">
+            <p class="metric-value" id="g3-kpi-combined">0</p>
+            <p class="metric-label">Combined rate per 100,000, selected states (2021)</p>
           </div>
+          <div class="glass-card metric-card">
+            <p class="metric-value" id="g3-kpi-high-val" style="color: #D55E00;">0</p>
+            <p class="metric-label">Highest rate (2021): <strong id="g3-kpi-high-name">-</strong></p>
+          </div>
+          <div class="glass-card metric-card highlight-card">
+            <p class="metric-value" id="g3-kpi-low-val" style="color: #009E73;">0</p>
+            <p class="metric-label">Lowest rate (2021): <strong id="g3-kpi-low-name">-</strong></p>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <p style="text-align: center; font-size: 0.9rem; font-style: italic; color: var(--c-text-muted); margin-bottom: 16px;">
+            <span aria-hidden="true">👆</span> Filter states below, or hover / use Left &amp; Right arrow keys on the chart to view exact yearly rates.
+          </p>
+          <div id="state-filter-container" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 24px;"></div>
           <div id="state-chart-container" style="width: 100%; max-width: 1000px; margin: 0 auto; position: relative;"></div>
           <p style="font-size: 0.85rem; color: var(--c-text-muted); text-align: center; margin-top: 15px;">
             *Rates are crude (not adjusted for age or sex). Dashed lines mark when Victoria (2012) and NSW (2017) stopped counting emergency-department-only cases, so trends across those years are not directly comparable.
