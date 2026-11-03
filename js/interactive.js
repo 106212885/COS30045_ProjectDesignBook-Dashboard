@@ -136,10 +136,10 @@ function setupInteractivity(chartContext) {
   //   back to the domain variable (calendar year: 2011 to 2021).
   // - stroke-dasharray="4,4": SVG stroke property creating dashed indicator lines for crosshairs.
   // ------------------------------------------------------------------------------------------------
-  d3.select(".a11y-tooltip").remove(); 
+  d3.select(".a11y-tooltip.g1-tooltip").remove(); // only remove G1's own tooltip, never the G2/G3 ones 
   
   const tooltip = d3.select("body").append("div")
-    .attr("class", "a11y-tooltip")
+    .attr("class", "a11y-tooltip g1-tooltip")
     .attr("aria-live", "polite") 
     .style("opacity", 0);
     
@@ -220,10 +220,14 @@ function setupInteractivity(chartContext) {
   svgParent.on("focusout", () => { crosshair.style("opacity", 0); tooltip.style("opacity", 0); });
 }
 
-
 /* ==========================================================================
    GRAPH 2 INTERACTIVITY: filter pills, KPI cards, colour rule, tooltip
    Called by renderSeverityChart() in national_roaduser_severity_chart.js.
+
+   GenAI acknowledgement: [EDIT THIS TO SAY HONESTLY WHAT YOU USED AI FOR]
+   Drafted with help from Claude (Anthropic). Prompt summary: "add G1-style filter pill buttons,
+   KPI cards and the three-colour rule to the G2 and G3 charts inside interactive.js".
+   I read, tested and edited the code before using it.
    ========================================================================== */
 function setupSeverityInteractivity(chartContext) {
   const { svgParent, svg, svgWidth, margin, rows, rowGroups, groups, keyText } = chartContext;
@@ -337,4 +341,123 @@ function setupSeverityInteractivity(chartContext) {
     })
     .on("blur", function () { d3.select(this).select(".row-band").style("opacity", 0); hideTooltip(); })
     .on("keydown", (event) => { if (event.key === "Escape") hideTooltip(); });
+}
+
+/* ==========================================================================
+   GRAPH 3 INTERACTIVITY: filter pills, KPI cards, colour rule, crosshair tooltip
+   Called by renderStateRatesChart() in state_rates_chart.js.
+   GenAI acknowledgement: see the block above.
+   ========================================================================== */
+function setupStateInteractivity(chartContext) {
+  const { svgParent, svg, containerNode, width, height, margin, x, years, nested, states, paths, labelEls } = chartContext;
+  const latest = s => nested.get(s).find(r => r.year === years[1]);
+
+  if (!window.stateActiveStates) window.stateActiveStates = new Set(states);
+  const activeStates = window.stateActiveStates;
+  let highestState = "";
+  let lowestState = "";
+
+  /** Three-colour rule on the ACTIVE states (by 2021 rate). */
+  function stateColour(s) {
+    if (!activeStates.has(s)) return "#B0B0B0";
+    if (s === highestState) return PALETTE.VERMILLION;
+    if (s === lowestState) return PALETTE.GREEN;
+    return "#222222";
   }
+  const isExtreme = s => activeStates.has(s) && (s === highestState || s === lowestState);
+
+  // ---- Tooltip and crosshair ----
+  d3.selectAll(".state-tooltip").remove();
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "a11y-tooltip state-tooltip")
+    .attr("aria-live", "polite")
+    .style("opacity", 0);
+  const crosshair = svg.append("line").attr("y1", 0).attr("y2", height).attr("stroke", "#C3B1E0")
+    .attr("stroke-dasharray", "4,4").style("opacity", 0);
+  const hideAll = () => { crosshair.style("opacity", 0); tooltip.style("opacity", 0); };
+
+  // ---- Filter pill buttons (same classes as G1) ----
+  const filterContainer = d3.select("#state-filter-container").html("");
+  filterContainer.append("span").attr("class", "filter-guide-label").text("Filter :");
+  states.forEach(s => {
+    const btn = filterContainer.append("button")
+      .attr("id", `state-pill-${s}`).attr("type", "button")
+      .attr("class", `filter-pill ${activeStates.has(s) ? "active" : ""}`)
+      .attr("aria-pressed", activeStates.has(s))
+      .on("click", function () {
+        if (activeStates.has(s)) activeStates.delete(s); else activeStates.add(s);
+        d3.select(this).classed("active", activeStates.has(s)).attr("aria-pressed", activeStates.has(s));
+        hideAll();
+        updateColorsAndKPIs();
+      });
+    btn.append("span").attr("id", `state-pill-dot-${s}`).attr("class", "pill-color-dot").attr("aria-hidden", "true");
+    btn.append("span").text(s);
+  });
+
+  // ---- Recalculate extremes, KPI cards and colours after every filter change ----
+  function setKpi(idVal, idName, val, name, colour) {
+    d3.select(idVal).text(val);
+    d3.select(idName).text(name).style("color", colour);
+  }
+  function updateColorsAndKPIs() {
+    const active = states.filter(s => activeStates.has(s)); // states are sorted highest to lowest 2021 rate
+    highestState = active.length ? active[0] : "";
+    lowestState = active.length > 1 ? active[active.length - 1] : "";
+
+    if (active.length === 0) {
+      d3.select("#g3-kpi-combined").text("0");
+      setKpi("#g3-kpi-high-val", "#g3-kpi-high-name", "0", "-", "#5E5A66");
+      setKpi("#g3-kpi-low-val", "#g3-kpi-low-name", "0", "-", "#5E5A66");
+    } else {
+      // Combined rate = total cases / total population of the selected states (not a simple average)
+      const cases = d3.sum(active, s => latest(s).cases);
+      const pop = d3.sum(active, s => latest(s).population);
+      const lowest = active[active.length - 1];
+      d3.select("#g3-kpi-combined").text(d3.format(".1f")(cases / pop * 100000));
+      setKpi("#g3-kpi-high-val", "#g3-kpi-high-name", d3.format(".1f")(latest(highestState).rate), highestState, PALETTE.VERMILLION);
+      setKpi("#g3-kpi-low-val", "#g3-kpi-low-name", d3.format(".1f")(latest(lowest).rate), lowest, PALETTE.GREEN);
+    }
+
+    states.forEach(s => {
+      const isActive = activeStates.has(s);
+      const colour = stateColour(s);
+      paths[s].attr("stroke", colour).attr("stroke-width", isActive ? 4 : 2).style("opacity", isActive ? 1 : 0.08);
+      if (isExtreme(s)) paths[s].raise(); // draw the highlighted lines on top
+      labelEls[s].style("fill", colour).style("font-weight", isExtreme(s) ? 800 : 600).style("opacity", isActive ? 1 : 0.2);
+      d3.select(`#state-pill-${s}`).style("color", isActive ? colour : "#8E8A96").style("border-color", isActive ? colour : "var(--glass-border)");
+      d3.select(`#state-pill-dot-${s}`).style("background-color", colour).style("opacity", isActive ? 1 : 0.4);
+    });
+    crosshair.raise();
+  }
+  updateColorsAndKPIs(); // initial synchronisation
+
+  // ---- Tooltip content, mouse and keyboard ----
+  function drawTooltip(year, left, top) {
+    crosshair.style("opacity", 1).attr("x1", x(year)).attr("x2", x(year));
+    const rowsAtYear = states.filter(s => activeStates.has(s))
+      .map(s => ({ s, d: nested.get(s).find(r => r.year === year) })).filter(r => r.d).sort((a, b) => b.d.rate - a.d.rate);
+    let html = `<div style="font-size:1.1rem; font-weight:700; border-bottom:1.5px solid #C3B1E0; padding-bottom:6px; margin-bottom:8px;">Year: ${year}</div>`;
+    if (rowsAtYear.length === 0) html += "<div>No states selected.</div>";
+    rowsAtYear.forEach(r => {
+      html += `<div style="font-weight:${isExtreme(r.s) ? 800 : 400};"><span style="color:${stateColour(r.s)}">●</span> ${r.s}: <strong>${d3.format(".1f")(r.d.rate)}</strong> per 100k (${d3.format(",")(r.d.cases)} cases)</div>`;
+    });
+    tooltip.html(html).style("left", left + "px").style("top", top + "px").style("opacity", 1);
+  }
+  const clampYear = v => Math.max(years[0], Math.min(years[1], Math.round(v)));
+
+  svg.append("rect").attr("width", width).attr("height", height).style("fill", "none").style("pointer-events", "all")
+    .on("mousemove", (event) => drawTooltip(clampYear(x.invert(d3.pointer(event)[0])), event.pageX + 20, event.pageY - 20))
+    .on("mouseout", hideAll);
+
+  let keyYear = years[1];
+  svgParent.on("keydown", (event) => {
+    if (event.key === "ArrowRight") keyYear = clampYear(keyYear + 1);
+    else if (event.key === "ArrowLeft") keyYear = clampYear(keyYear - 1);
+    else if (event.key === "Escape") { hideAll(); return; }
+    else return;
+    event.preventDefault();
+    const r = containerNode.getBoundingClientRect();
+    drawTooltip(keyYear, r.left + window.scrollX + margin.left + x(keyYear) + 20, r.top + window.scrollY + margin.top);
+  });
+  svgParent.on("blur", hideAll);
+}
