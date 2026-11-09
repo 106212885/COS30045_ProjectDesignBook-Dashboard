@@ -1,321 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Beyond the Fatality Count | Australia Road Hospitalisations 2011–2021</title>
-
-  <!-- Project Stylesheets: Core styling and accessible toolbar rules -->
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/accessibility.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospitalised Injuries from Road Crashes in Australia (2011–2021)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/accessibility.css">
 </head>
-<body>
+<body class="h-screen w-screen flex flex-row overflow-hidden bg-[#F3F5F4]">
 
-  <!-- ================================================================================================
-       ACCESSIBILITY COMPONENT: SKIP-TO-CONTENT LINK (WCAG 2.4.1 Bypass Blocks)
-       Allows keyboard/screen-reader users to jump directly to primary content without tabbing 
-       through navigation links on every page load.
-       ================================================================================================ -->
-  <a class="skip-link" href="#main-content">Skip to main content</a>
-
-  <!-- Mobile Drawer Toggle Button -->
-  <button id="mobile-nav-toggle" class="mobile-nav-toggle glass-pill" aria-label="Toggle Navigation Menu">
-    <span class="hamburger-bar" aria-hidden="true"></span>
-    <span class="hamburger-bar" aria-hidden="true"></span>
-    <span class="hamburger-bar" aria-hidden="true"></span>
-  </button>
-
-  <!-- Top Sticky Course & Team Identification Banner -->
-  <header id="top-team-banner" class="glass-banner">
-    <div class="banner-content">
-      <span class="team-badge">COS30045 Data Visualisation</span>
-      <span class="team-info"><strong>[Trace]</strong> &nbsp;|&nbsp; Team Members: [Chooi Ke Xin, Tan Qiao En, Wong Joe Yee]</span>
-    </div>
-  </header>
-
-  <!-- Accessibility Toolbar: Font enlargement controls with polite audio notifications -->
-  <div class="a11y-toolbar glass-pill" role="region" aria-label="Font Size Controls">
-    <button id="btn-text-decrease" class="a11y-btn" title="Decrease Font Size">A-</button>
-    <button id="btn-text-increase" class="a11y-btn" title="Increase Font Size">A+</button>
-  </div>
-  <div id="a11y-toast" class="toast-notification" role="status" aria-live="polite"></div>
-
-  <!-- Left Sticky Navigation Rail (Enables section jumping and continuous progress tracking) -->
-  <nav id="left-sticky-nav" class="left-sticky-nav" aria-label="Section Navigation">
-    <div class="nav-track-wrapper">
-      <div class="nav-track-line" aria-hidden="true"></div>
-      <div id="nav-glider-dot" class="nav-glider-dot" aria-hidden="true"></div>
-
-      <ul class="nav-list">
-        <li class="nav-item active"><a class="nav-link" href="#hero"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">Introduction</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#sec-overview"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">01. Overview</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#sec-national"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">02. National Trends</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#sec-users"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">03. Injury Severity</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#sec-equity"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">04. State Comparisons</span></a></li>
-        <li class="nav-item"><a class="nav-link" href="#sec-quality"><div class="nav-dot-container" aria-hidden="true"><span class="nav-dot"></span></div><span class="nav-label">05. Data Caveats</span></a></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- ================================================================================================
-       MAIN STORYTELLING CONTENT CONTAINER
-       SPECIAL INDEX: tabindex="-1" allows JavaScript focus() to navigate directly here without 
-       inserting the container into standard keyboard tab cycles.
-       ================================================================================================ -->
-  <main id="main-content" class="main-content" tabindex="-1">
-
-    <!-- HERO SECTION: Thematic Introduction & Section Preview Slideshow -->
-    <section id="hero" class="scrolly-section hero-section">
-      <div class="hero-text-container">
-        <p class="eyebrow-tag">AUSTRALIAN ROAD SAFETY REPORT • 2011–2021</p>
-        <h1 class="hero-title">Beyond the Fatality Count</h1>
-        <h2 class="hero-subtitle">Shifting the Focus from Deaths to Morbidity</h2>
-        <p class="hero-story">
-          Road-safety debate usually centres on fatalities, yet thousands more survive and spend days in hospital—with <strong>39,505 hospitalisations</strong> recorded in 2021 alone (<strong>410,884</strong> across 2011–2021). This visualisation tracks non-fatal injury trends, compares trauma severity, and adjusts state rates per 100,000 people to guide targeted road-safety prevention.
-        </p>
-      </div>
-
-      <!-- Hero Media Frame: Pauseable slideshow previewing G1, G2, and G3 themes -->
-      <div id="hero-media-frame" class="hero-media-frame glass-card">
-        <div class="window-controls">
-          <span class="win-dot" aria-hidden="true"></span><span class="win-dot" aria-hidden="true"></span><span class="win-dot" aria-hidden="true"></span>
-          <span class="window-title">BITRE &amp; AIHW Hospitalised Injury Surveillance (2011–2021)</span>
-          <button type="button" id="slide-toggle" class="slide-toggle">Pause slideshow</button>
-        </div>
-
-        <div id="slideshow-container" class="slideshow-container">
-          <!-- Slide 1: Previews G1 (Trends by Road User) -->
-          <div class="slide slide-theme-g1 active">
-            <div class="slide-caption">
-              <span class="slide-tag">G1 • WHO IS BEING HOSPITALISED?</span>
-              <strong>Pedal Cyclists Rose +51% While Pedestrians Fell -15%</strong>
-              <span class="slide-sub">Cases grew from 34,033 (2011) to 39,505 (2021); car occupants make up 46.9%.</span>
+    <!-- 1. LEFT SIDEBAR -->
+    <aside class="w-64 h-full bg-teal-sidebar text-white flex-shrink-0 flex flex-col justify-between p-4 overflow-hidden relative z-30 shadow-xl">
+        <div>
+            <!-- BRAND LOGO -->
+            <div class="flex items-center space-x-3 mb-6 pt-1">
+                <div class="w-9 h-9 flex-shrink-0 relative flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <path d="M 10 90 Q 50 10 90 90" fill="none" stroke="#E67E22" stroke-width="8" stroke-linecap="round"/>
+                        <path d="M 25 85 Q 50 25 75 85" fill="none" stroke="#27AE60" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M 40 80 Q 50 40 60 80" fill="none" stroke="#F1C40F" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="text-xs font-extrabold uppercase tracking-wider leading-tight text-white">Road Safety</div>
+                    <div class="text-xs font-light uppercase tracking-wider text-teal-200">Australia</div>
+                </div>
             </div>
-          </div>
 
-          <!-- Slide 2: Previews G2 (Injury Severity & Outcomes) -->
-          <div class="slide slide-theme-g2">
-            <div class="slide-caption">
-              <span class="slide-tag">G2 • INJURY SEVERITY &amp; OUTCOMES</span>
-              <strong>Pedestrians Stay Longest (9.1 Days) &amp; Highest Mortality (2.1%)</strong>
-              <span class="slide-sub">Compared with 2.9 bed days and 0.19% mortality for pedal cyclists (2011–2020).</span>
+            <!-- SIDEBAR NAV ITEMS -->
+            <nav class="space-y-2">
+                <button onclick="switchTab('hospitalisation')" id="side-nav-hospitalisation" 
+                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-teal-100 hover:bg-teal-900/60 hover:text-white transition-all duration-200">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span>Hospitalisation</span>
+                </button>
+
+                <button onclick="switchTab('firstnations')" id="side-nav-firstnations" 
+                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 bg-white text-teal-dark shadow-md">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <span>First Nations Peoples</span>
+                </button>
+
+                <button onclick="switchTab('states')" id="side-nav-states" 
+                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-teal-100 hover:bg-teal-900/60 hover:text-white transition-all duration-200">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>States &amp; Territories</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- BOTTOM SIDEBAR SILHOUETTE & TAGLINE -->
+        <div class="pt-4 border-t border-teal-800/60 relative overflow-hidden">
+            <div class="w-full h-14 opacity-30 mb-1 relative">
+                <svg viewBox="0 0 300 100" class="w-full h-full" preserveAspectRatio="none">
+                    <rect x="10" y="40" width="15" height="60" fill="#88CCEE"/>
+                    <rect x="30" y="20" width="22" height="80" fill="#88CCEE"/>
+                    <rect x="55" y="50" width="18" height="50" fill="#88CCEE"/>
+                    <rect x="76" y="30" width="25" height="70" fill="#88CCEE"/>
+                    <rect x="105" y="10" width="20" height="90" fill="#88CCEE"/>
+                    <rect x="130" y="45" width="25" height="55" fill="#88CCEE"/>
+                    <rect x="160" y="25" width="30" height="75" fill="#88CCEE"/>
+                    <rect x="195" y="40" width="20" height="60" fill="#88CCEE"/>
+                    <rect x="220" y="15" width="25" height="85" fill="#88CCEE"/>
+                    <rect x="250" y="35" width="40" height="65" fill="#88CCEE"/>
+                    <path d="M 0 95 Q 120 40 300 95" stroke="#F1C40F" stroke-width="4" fill="none"/>
+                </svg>
             </div>
-          </div>
+            <p class="text-[11px] font-medium text-teal-200">Safer roads.</p>
+            <p class="text-[11px] font-semibold text-white">Healthier communities.</p>
+            <div class="w-7 h-1 bg-amber-400 rounded-full mt-1.5"></div>
+        </div>
+    </aside>
 
-          <!-- Slide 3: Previews G3 (State Rates per 100,000) -->
-          <div class="slide slide-theme-g3">
-            <div class="slide-caption">
-              <span class="slide-tag">G3 • STATE RATES PER 100,000 PEOPLE</span>
-              <strong>Northern Territory Recorded 286.1 per 100k in 2021</strong>
-              <span class="slide-sub">More than double NSW (111.2 per 100k)—showing why raw counts mislead.</span>
+    <!-- 2. MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 h-full p-2.5 flex flex-col min-w-0 overflow-hidden space-y-2">
+
+        <!-- HEADER BANNER -->
+        <header class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden flex-shrink-0">
+            <div class="flex items-center justify-between px-4 py-2.5">
+                <div class="z-10 flex-1">
+                    <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-tight">
+                        Hospitalised Injuries from Road Crashes in Australia
+                    </h1>
+                    <p class="text-[11px] text-slate-500 font-medium">
+                        2011 – 2021 &nbsp;|&nbsp; Bureau of Infrastructure and Transport Research Economics (BITRE)
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 z-10 flex-shrink-0">
+                    <button onclick="switchTab('hospitalisation')" id="top-pill-hospitalisation" 
+                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200">
+                        Hospitalisation
+                    </button>
+                    <button onclick="switchTab('firstnations')" id="top-pill-firstnations" 
+                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 bg-teal-dark text-white shadow-sm">
+                        First Nations Peoples
+                    </button>
+                    <button onclick="switchTab('states')" id="top-pill-states" 
+                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200">
+                        States &amp; Territories
+                    </button>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
+        </header>
 
-    <!-- SECTION 01: OVERVIEW & AUDIENCE -->
-    <section id="sec-overview" class="scrolly-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-number">01 / PURPOSE &amp; AUDIENCE</span>
-          <h2 class="section-title">Answering Three Key Questions</h2>
-          <p class="section-lead">
-            Designed for road-safety policymakers, public-health analysts, and the general public, this visualisation explores 86,140 traffic crash records from BITRE and ABS population data (2011–2021) to answer three critical questions.
-          </p>
-        </div>
-        <div class="grid-4-col">
-          <div class="glass-card task-card">
-            <div class="card-icon">01</div>
-            <h3>10-Year Trends (G1)</h3>
-            <p>How have hospitalisations from road crashes changed between 2011 and 2021, and which road user groups are rising or falling?</p>
-          </div>
-          <div class="glass-card task-card">
-            <div class="card-icon">02</div>
-            <h3>Injury Severity (G2)</h3>
-            <p>Which road user groups have the most serious injuries, using average bed days per case and the share of cases that end in death?</p>
-          </div>
-          <div class="glass-card task-card">
-            <div class="card-icon">03</div>
-            <h3>State Comparisons (G3)</h3>
-            <p>How do states and territories compare using hospitalisations per 100,000 people once population size is taken into account?</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 02: QUESTION 1 (G1) -->
-    <section id="sec-national" class="scrolly-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-number">02 / QUESTION 1: CHANGE OVER TIME BY ROAD USER GROUP</span>
-          <h2 class="section-title">G1: Who is being hospitalised? Trends by road user, 2011–2021</h2>
-          <p class="section-lead">
-            Yearly hospitalisations rose from <strong>34,033 in 2011</strong> to a peak of <strong>39,866 in 2019</strong>, dipped to <strong>37,966 in 2020</strong>, and reached <strong>39,505 in 2021</strong>. However, a single national total hides divergent trends: <strong>pedal cyclists rose by ~51%</strong> (5,391 to 8,163) and <strong>motorcyclists by ~17%</strong>, while <strong>pedestrians fell by ~15%</strong> and <strong>bus and heavy transport fell by ~17%</strong>.
-          </p>
-        </div>
-        
-        <!-- Summary KPI Cards: Dynamically updated by interactive.js -->
-        <div class="grid-4-col" style="margin-bottom: 24px;">
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="kpi-total">0</p>
-            <p class="metric-label">Total Hospitalisations (2011–2021)</p>
-          </div>
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="kpi-highest-val" style="color: #D55E00;">0</p>
-            <p class="metric-label">Highest Volume: <strong id="kpi-highest-name">-</strong></p>
-          </div>
-          <div class="glass-card metric-card highlight-card">
-            <p class="metric-value" id="kpi-lowest-val" style="color: #009E73;">0</p>
-            <p class="metric-label">Lowest Volume: <strong id="kpi-lowest-name">-</strong></p>
-          </div>
+        <!-- TEAMMATE PLACEHOLDER BANNER -->
+        <div id="teammate-placeholder" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800 text-xs font-semibold flex items-center justify-between flex-shrink-0">
+            <span>This section is reserved for your teammate's data visualization module.</span>
+            <button onclick="switchTab('firstnations')" class="underline text-amber-900 font-bold ml-2">Back to First Nations Peoples</button>
         </div>
 
-        <!-- D3 Chart Container Card -->
-        <div class="glass-card">
-          <p style="text-align: center; font-size: 0.9rem; font-style: italic; color: var(--c-text-muted); margin-bottom: 16px;">
-            <span aria-hidden="true">👆</span> Filter road user groups below, or hover / use Left &amp; Right arrow keys on the chart to view exact yearly counts.
-          </p>
+        <!-- DASHBOARD BODY CONTAINER -->
+        <div id="dashboard-content-area" class="flex-1 flex flex-col min-h-0 space-y-2">
 
-          <!-- Containers dynamically populated by D3 script -->
-          <div id="filter-container"></div>
-          <div id="chart-container" style="width: 100%; max-width: 1000px; margin: 0 auto; position: relative;"></div>
-          
-          <p style="font-size: 0.85rem; color: var(--c-text-muted); text-align: center; margin-top: 15px;">
-            *Note: Victoria stopped counting emergency-department-only cases from July 2012 (lowering national cases by ~2.8%), and NSW did the same from June 2017.
-          </p>
-        </div>
-      </div>
-    </section>
+            <!-- FILTER BAR -->
+            <section class="grid grid-cols-4 gap-2 flex-shrink-0">
+                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
+                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <label for="filterYear" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Year</label>
+                        <select id="filterYear" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
+                            <option value="ALL" selected>All Years (2011–2021)</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                        </select>
+                    </div>
+                </div>
 
-    <!-- SECTION 03: QUESTION 2 (G2) -->
-    <section id="sec-users" class="scrolly-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-number">03 / QUESTION 2: SERIOUSNESS OF INJURIES BY ROAD USER</span>
-          <h2 class="section-title">G2: Pedestrians stay longest and are most likely to die</h2>
-          <p class="section-lead">
-            How many people are hurt and how badly they are hurt are different things. Car occupants make up the biggest share of cases (46.9% in 2021), but <strong>pedestrians suffer the most serious injuries</strong>—staying an average of <strong>9.1 bed days per case</strong> with <strong>2.1% of cases ending in death</strong> (2011–2020), compared with <strong>2.9 bed days</strong> and <strong>0.19%</strong> for pedal cyclists.
-          </p>
-        </div>
-        <!-- Summary KPI Cards (G2): updated by the chart script -->
-        <div class="grid-4-col" style="margin-bottom: 24px;">
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="g2-kpi-total">0</p>
-            <p class="metric-label">Hospitalisations, selected groups (2011–2020)</p>
-          </div>
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="g2-kpi-long-val" style="color: #D55E00;">0</p>
-            <p class="metric-label">Longest stay (bed days per case): <strong id="g2-kpi-long-name">-</strong></p>
-          </div>
-          <div class="glass-card metric-card highlight-card">
-            <p class="metric-value" id="g2-kpi-short-val" style="color: #009E73;">0</p>
-            <p class="metric-label">Shortest stay (bed days per case): <strong id="g2-kpi-short-name">-</strong></p>
-          </div>
-        </div>
+                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
+                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <label for="filterState" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">State / Territory</label>
+                        <select id="filterState" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
+                            <option value="ALL" selected>All States</option>
+                            <option value="NSW">NSW</option>
+                            <option value="VIC">VIC</option>
+                            <option value="QLD">QLD</option>
+                            <option value="WA">WA</option>
+                            <option value="SA">SA</option>
+                            <option value="TAS">TAS</option>
+                            <option value="NT">NT</option>
+                            <option value="ACT">ACT</option>
+                        </select>
+                    </div>
+                </div>
 
-        <div class="glass-card">
-          <p style="text-align: center; font-size: 0.9rem; font-style: italic; color: var(--c-text-muted); margin-bottom: 16px;">
-            <span aria-hidden="true">👆</span> Filter road user groups below, or hover over a row / press Tab to see exact values.
-          </p>
-          <div id="severity-filter-container" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 24px;"></div>
-          <div id="severity-chart-container" style="width: 100%; max-width: 1100px; margin: 0 auto; position: relative;"></div>
-          <p style="font-size: 0.85rem; color: var(--c-text-muted); text-align: center; margin-top: 15px;">
-            *Death percentages use 2011–2020 only. Died cases are zero in every 2021 row of the source data, which looks like missing data, not a true absence of deaths.
-          </p>
-        </div>
-      </div>
-    </section>
+                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
+                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <label for="filterUser" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Road User</label>
+                        <select id="filterUser" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
+                            <option value="ALL" selected>All Road Users</option>
+                            <option value="Car driver/passenger">Car Driver/Passenger</option>
+                            <option value="Motorcyclist">Motorcyclist</option>
+                            <option value="Pedestrian">Pedestrian</option>
+                            <option value="Pedal cyclist">Pedal Cyclist</option>
+                            <option value="Pick-up truck/van">Pick-up truck/van</option>
+                            <option value="Heavy transport">Heavy transport</option>
+                            <option value="Bus occupant">Bus occupant</option>
+                        </select>
+                    </div>
+                </div>
 
-    <!-- SECTION 04: QUESTION 3 (G3) -->
-    <section id="sec-equity" class="scrolly-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-number">04 / QUESTION 3: STATES COMPARED BY POPULATION</span>
-          <h2 class="section-title">G3: Hospitalisations per 100,000 people by state</h2>
-          <p class="section-lead">
-            A big state will almost always report more raw cases than a small one. Joining BITRE state hospitalisations with ABS Table 4 resident population reveals that in 2021, the <strong>Northern Territory recorded 286.1 hospitalisations per 100,000 people</strong>—more than double <strong>New South Wales (111.2 per 100,000)</strong>.
-          </p>
-        </div>
-        <!-- Summary KPI Cards (G3): updated by the chart script -->
-        <div class="grid-4-col" style="margin-bottom: 24px;">
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="g3-kpi-combined">0</p>
-            <p class="metric-label">Combined rate per 100,000, selected states (2021)</p>
-          </div>
-          <div class="glass-card metric-card">
-            <p class="metric-value" id="g3-kpi-high-val" style="color: #D55E00;">0</p>
-            <p class="metric-label">Highest rate (2021): <strong id="g3-kpi-high-name">-</strong></p>
-          </div>
-          <div class="glass-card metric-card highlight-card">
-            <p class="metric-value" id="g3-kpi-low-val" style="color: #009E73;">0</p>
-            <p class="metric-label">Lowest rate (2021): <strong id="g3-kpi-low-name">-</strong></p>
-          </div>
-        </div>
+                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
+                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <label for="filterAge" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Age Group</label>
+                        <select id="filterAge" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
+                            <option value="ALL" selected>All Age Groups</option>
+                            <option value="0-7">0–7</option>
+                            <option value="8-16">8–16</option>
+                            <option value="17-25">17–25</option>
+                            <option value="26-39">26–39</option>
+                            <option value="40-64">40–64</option>
+                            <option value="65+">65+</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
 
-        <div class="glass-card">
-          <p style="text-align: center; font-size: 0.9rem; font-style: italic; color: var(--c-text-muted); margin-bottom: 16px;">
-            <span aria-hidden="true">👆</span> Filter states below, or hover / use Left &amp; Right arrow keys on the chart to view exact yearly rates.
-          </p>
-          <div id="state-filter-container" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 24px;"></div>
-          <div id="state-chart-container" style="width: 100%; max-width: 1000px; margin: 0 auto; position: relative;"></div>
-          <p style="font-size: 0.85rem; color: var(--c-text-muted); text-align: center; margin-top: 15px;">
-            *Rates are crude (not adjusted for age or sex). Dashed lines mark when Victoria (2012) and NSW (2017) stopped counting emergency-department-only cases, so trends across those years are not directly comparable.
-          </p>
+            <!-- 4. KPI CARDS ROW -->
+            <section class="grid grid-cols-4 gap-2 flex-shrink-0">
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-emerald-700 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="kpi1-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">18,658</div>
+                            <div class="text-[10px] font-medium text-slate-400">First Nations Hospitalisations</div>
+                            <div id="kpi1-sub" class="text-[9px] font-bold text-emerald-600 flex items-center gap-1">
+                                <span>↑ 90.2%</span> <span class="text-slate-400 font-normal">increase (2011–2021)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 4h8m-4 4h4m-8 4h8M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="kpi2-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">52.3%</div>
+                            <div id="kpi2-label" class="text-[10px] font-medium text-slate-400">Car Driver &amp; Passenger</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 flex-shrink-0">
+                        <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#FED7AA" stroke-width="4.5"/>
+                            <path id="kpi2-donut" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#EA580C" stroke-width="4.5" stroke-dasharray="52.3, 100"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="kpi3-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">30.9%</div>
+                            <div id="kpi3-label" class="text-[10px] font-medium text-slate-400">Peak Age Group (17–25)</div>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 flex-shrink-0">
+                        <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#F3E8FF" stroke-width="4.5"/>
+                            <path id="kpi3-donut" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#9333EA" stroke-width="4.5" stroke-dasharray="30.9, 100"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="kpi4-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">1,696</div>
+                            <div class="text-[10px] font-medium text-slate-400">Annual Average Cases</div>
+                        </div>
+                    </div>
+                    <div class="flex items-end space-x-1 h-6">
+                        <div class="w-1 bg-teal-200 rounded-t h-2"></div>
+                        <div class="w-1 bg-teal-300 rounded-t h-3"></div>
+                        <div class="w-1 bg-teal-400 rounded-t h-4"></div>
+                        <div class="w-1 bg-teal-500 rounded-t h-5"></div>
+                        <div class="w-1 bg-teal-600 rounded-t h-5"></div>
+                        <div class="w-1 bg-teal-700 rounded-t h-6"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. MIDDLE CHARTS ROW -->
+            <section class="grid grid-cols-2 gap-2 flex-1 min-h-0">
+                <!-- CHART 1: Annual Hospitalisations Trend (Line Chart) -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col h-full min-h-0">
+                    <div class="flex items-center space-x-2 mb-1.5 flex-shrink-0">
+                        <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                        <h3 class="text-xs font-bold text-slate-900">1. Annual Hospitalisations Trend (2011–2021)</h3>
+                    </div>
+                    <div class="flex-1 w-full min-h-0 relative">
+                        <canvas id="chartTrend" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- CHART 3: Hospitalisations by Road User (Horizontal Bar Chart) -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col h-full min-h-0">
+                    <div class="flex items-center justify-between mb-1.5 flex-shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            <h3 class="text-xs font-bold text-slate-900">3. Hospitalisations by Road User</h3>
+                        </div>
+                        <span class="text-[9px] font-semibold text-slate-400">Preserves n.p.</span>
+                    </div>
+                    <div class="flex-1 w-full min-h-0 relative">
+                        <canvas id="chartRoadUser" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. BOTTOM CHARTS ROW (3 CARDS) -->
+            <section class="grid grid-cols-3 gap-2 flex-1 min-h-0">
+                <!-- CHART 2: Hospitalisations by Age Group (Horizontal Bar Chart) -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
+                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                            </svg>
+                            <h3 class="text-xs font-bold text-slate-900">2. Hospitalisations by Age Group</h3>
+                        </div>
+                    </div>
+                    <div class="flex-1 w-full min-h-0 relative">
+                        <canvas id="chartAgeGroup" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+
+                <!-- CHART 4: Hospitalisations by Age Group & Year (Heatmap Matrix) -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
+                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                            </svg>
+                            <h3 class="text-xs font-bold text-slate-900">4. Age Group × Year Heatmap</h3>
+                        </div>
+                    </div>
+                    <div id="heatmap-matrix-container" class="w-full h-full flex flex-col justify-between py-1 min-h-0"></div>
+                </div>
+
+                <!-- CHART 5: Age Profile Comparison (Dumbbell Chart) -->
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
+                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                            </svg>
+                            <h3 class="text-xs font-bold text-slate-900">5. Age Profile Comparison (Dumbbell)</h3>
+                        </div>
+                    </div>
+                    <div class="flex-1 w-full min-h-0 relative">
+                        <canvas id="chartAgeDumbbell" class="absolute inset-0 w-full h-full"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. FOOTER CARDS -->
+            <section class="grid grid-cols-2 gap-2 flex-shrink-0">
+                <div class="bg-white rounded-xl p-2.5 border border-slate-200/80 shadow-sm flex items-start space-x-3">
+                    <div class="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 flex-shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-slate-900 mb-0.5">Key Insights (First Nations)</h4>
+                        <ul class="text-[10px] text-slate-600 space-y-0.5 list-disc pl-3">
+                            <li id="insight1">Hospitalisations rose from 1,167 (2011) to 2,220 (2021), a 90.2% total increase over eleven years.</li>
+                            <li id="insight2">Young adults (17–25) account for 30.9% of First Nations hospitalisations vs 19.7% for Non-Indigenous Australians.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-2.5 border border-slate-200/80 shadow-sm flex items-start justify-between relative overflow-hidden">
+                    <div class="flex items-start space-x-3 z-10 flex-1">
+                        <div class="w-7 h-7 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-900 mb-0.5">Data Source &amp; Notes</h4>
+                            <p class="text-[10px] text-slate-500 leading-tight">
+                                Source: BITRE, First Nations Hospitalised Injuries, 2011–2021 (Worksheets T1, T2, T3).<br>
+                                Data processed via KNIME Analytics Platform. Values labeled 'n.p.' are preserved as suppressed.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="absolute -right-3 -bottom-5 w-28 h-16 opacity-80 pointer-events-none">
+                        <svg viewBox="0 0 150 100" class="w-full h-full">
+                            <path d="M 0 100 Q 80 10 150 70" fill="none" stroke="#2E7D75" stroke-width="24"/>
+                            <path d="M 0 100 Q 80 10 150 70" fill="none" stroke="#F1C40F" stroke-width="2" stroke-dasharray="6,6"/>
+                        </svg>
+                    </div>
+                </div>
+            </section>
         </div>
-      </div>
-    </section>
+    </main>
 
-    <!-- SECTION 05: DATA QUALITY, LIMITATIONS & ETHICS -->
-    <section id="sec-quality" class="scrolly-section">
-      <div class="section-container">
-        <div class="section-header">
-          <span class="section-number">05 / DATA GOVERNANCE, QUALITY &amp; ETHICS</span>
-          <h2 class="section-title">Data Quality, Limitations &amp; Ethical Framing</h2>
-          <p class="section-lead">
-            Cleaned and validated in KNIME across 86,140 Traffic rows against published BITRE Table 1 totals (zero discrepancy across all 11 years), our analysis accounts for four critical data constraints.
-          </p>
-        </div>
-        <div class="grid-2x2">
-          <div class="glass-card caveat-card">
-            <div class="caveat-header"><span class="caveat-badge">01 • SERIES BREAKS</span><h3>VIC (2012) &amp; NSW (2017) Rule Changes</h3></div>
-            <p>Victoria stopped counting emergency-department-only cases from 1 July 2012 (lowering national cases by ~2.8% in 2012), and NSW did the same from June 2017. Figures before and after these dates are not fully comparable.</p>
-          </div>
-          <div class="glass-card caveat-card">
-            <div class="caveat-header"><span class="caveat-badge">02 • MORTALITY DATA</span><h3>Incomplete 2020–2021 Death Records</h3></div>
-            <p>"Died cases" (death within 30 days of admission) fell from 194 in 2019 to 88 in 2020 and 0 in every 2021 row. Because 2021 mortality is incomplete (`died_data_valid = N`), G2 mortality analysis is strictly constrained to 2011–2020.</p>
-          </div>
-          <div class="glass-card caveat-card">
-            <div class="caveat-header"><span class="caveat-badge">03 • STATE &amp; RATE SCOPE</span><h3>Crude Rates &amp; 30-Day Death Exclusions</h3></div>
-            <p>The BITRE state file excludes patients who died within 30 days (e.g., 33,553 state cases vs 34,033 national cases in 2011) and suppresses small counts as "n.p.". All population rates are crude rates using ABS June quarter estimates, unadjusted for age or sex.</p>
-          </div>
-          <div class="glass-card caveat-card">
-            <div class="caveat-header"><span class="caveat-badge">04 • ETHICAL CONSIDERATIONS</span><h3>First Nations Data &amp; Non-Blame Framing</h3></div>
-            <p>We did not chart the separate BITRE First Nations dataset because matching population denominators were unavailable to compute fair rates, and raw counts can misrepresent risk. Differences across states and road users highlight systemic prevention needs, not individual fault.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="site-footer">
-    <p>COS30045 Data Visualisation Project • Team [Trace] • Data Sources: BITRE (AIHW NHMD) &amp; ABS Table 4 (2011–2021)</p>
-  </footer>
-
-  <!-- Modular Scripts: Loaded in dependency order -->
-  <script src="js/constants.js"></script>
-  <script src="js/accessibility.js"></script>
-  <script src="js/main.js"></script>
-  
-  <!-- D3.js Library v7 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-  
-  <!-- Visualisation & Interaction Modules -->
-  <script src="js/national_trends_chart.js"></script>
-  <script src="js/national_roaduser_severity_chart.js"></script>
-  <script src="js/state_rates_chart.js"></script>
-  <script src="js/interactive.js"></script>
-  <script src="js/loaded_data.js"></script>
+    <!-- JS MODULES -->
+    <script src="js/constants.js"></script>
+    <script src="js/loaded_data.js"></script>
+    <script src="js/interactive.js"></script>
+    <script src="js/accessibility.js"></script>
+    <script src="js/trend_chart.js"></script>
+    <script src="js/age_group_chart.js"></script>
+    <script src="js/road_user_chart.js"></script>
+    <script src="js/age_year_heatmap.js"></script>
+    <script src="js/age_profile_dumbbell.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
