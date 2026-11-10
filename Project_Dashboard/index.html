@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hospitalised Injuries from Road Crashes in Australia | Hospitalisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 90Q50 10 90 90" fill="none" stroke="#0072B2" stroke-width="8" stroke-linecap="round"/><path d="M25 85Q50 25 75 85" fill="none" stroke="#009E73" stroke-width="6" stroke-linecap="round"/><path d="M40 80Q50 40 60 80" fill="none" stroke="#E69F00" stroke-width="4" stroke-linecap="round"/></svg>
+      <div><b>Road Safety</b><span>Australia</span></div>
+    </div>
+    <nav class="nav" aria-label="Pages">
+      <a class="active" href="index.html" aria-current="page">Hospitalisation</a>
+      <a href="first-nations.html">First Nations Peoples</a>
+      <a href="states.html">States &amp; Territories</a>
+    </nav>
+  </div>
+  <div class="side-foot">
+    <p class="t1">Safer roads.</p><p class="t2">Healthier communities.</p><div class="bar"></div>
+    <p class="src">Source: BITRE, Hospitalised Injury Data, 2011–2021 (national, traffic crashes only). Counts are not adjusted for population size. Unknown age is excluded from age charts.</p>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="topbar">
+    <div class="title">
+      <h1>Hospitalised Injuries from Road Crashes in Australia</h1>
+      <p>2011–2021 &nbsp;|&nbsp; Bureau of Infrastructure and Transport Research Economics (BITRE)</p>
+    </div>
+    <button id="resetBtn" class="reset" type="button">Reset filters</button>
+  </header>
+
+  <section class="card filters" aria-label="Filters">
+    <div class="f"><label for="filterYear">Year</label><select id="filterYear"></select></div>
+    <div class="f"><label for="filterSex">Sex</label><select id="filterSex"></select></div>
+    <div class="f"><label for="filterUser">Road user</label><select id="filterUser"></select></div>
+    <div class="f"><label for="filterAge">Age group</label><select id="filterAge"></select></div>
+  </section>
+
+  <section class="kpis" aria-live="polite">
+    <div class="card kpi" style="--c:#0072B2"><div><div class="v" id="k1v">–</div><div class="n">Total hospitalisations</div><div class="s" id="k1s"></div></div></div>
+    <div class="card kpi" style="--c:#D55E00"><div><div class="v" id="k2v">–</div><div class="n">Avg bed days per case</div><div class="s" id="k2s"></div></div></div>
+    <div class="card kpi" style="--c:#CC79A7"><div><div class="v" id="k3v">–</div><div class="n">Died in care (≤30 days)</div><div class="s" id="k3s"></div></div></div>
+    <div class="card kpi" style="--c:#009E73"><div><div class="v" id="k4v">–</div><div class="n">Peak month</div><div class="s" id="k4s"></div></div></div>
+  </section>
+
+  <section class="row row1">
+    <article class="card chart">
+      <h3><span class="dot"></span>Who is hurt, in what crash type, and where do they live?<span class="tools"><button class="zoom" type="button" data-zoom="Sankey" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subSankey"></p>
+      <div class="body" id="chartSankey"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Road user mix by age group<span class="tools"><button class="zoom" type="button" data-zoom="Meki" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subMeki"></p>
+      <div class="legend" id="legUser" role="group" aria-label="Road user legend (click to filter)"></div>
+      <div class="body" id="chartMeki"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Crash Type Distribution<span class="tools"><button class="zoom" type="button" data-zoom="Donut" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subDonut"></p>
+      <div class="body" id="chartDonut"></div>
+    </article>
+  </section>
+
+  <section class="row row2">
+    <article class="card chart">
+      <h3><span class="dot"></span>Average Bed Days per Case
+        <span class="tools"><span class="seg" role="group" aria-label="Group by"><button data-bed="age" class="on">Age</button><button data-bed="user">Road user</button></span><button class="zoom" type="button" data-zoom="Bed" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subBed"></p>
+      <div class="body" id="chartBed"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Seasonality: Month &amp; Year<span class="tools"><span class="legend static" id="legHeat"></span><button class="zoom" type="button" data-zoom="Season" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subSeason"></p>
+      <div class="body" id="chartSeason"></div>
+    </article>
+  </section>
+  <p class="foot">Raw counts, not rates: jurisdictions and groups differ in population size. Hospitalisations = BITRE "Hospitalisations" field (traffic category only). Bed days include later transfer episodes. Unknown age is excluded from age charts.</p>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle"></h2>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <p class="sub" id="modalSub"></p>
+    <div class="body" id="modalChart"></div>
+  </div>
+</div>
+<div id="tip" class="tip" role="tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
