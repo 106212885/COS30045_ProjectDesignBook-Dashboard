@@ -161,8 +161,8 @@ if (document.getElementById('filterSex')) {
   /* ---- chart registry (cards and expand modal) ---- */
   const REG = {
     Trend: { title: '1. Annual Hospitalisations Trend (2011–2021)', id: 'chartTrend', fn: FNC.trend, rows: () => FN.filter(state, ['year']) },
-    User:  { title: '3. Hospitalisations by Road User', id: 'chartUser', fn: FNC.user, rows: () => FN.filter(state, ['user']) },
-    AgeBar:{ title: '2. Hospitalisations by Age Group', id: 'chartAgeBar', fn: FNC.ageBar, rows: () => FN.filter(state, ['age']) },
+    User:  { title: '3. Hospitalisations by Road User', id: 'chartUser', fn: FNC.user, rows: () => FN.filter(state) },
+    AgeBar:{ title: '2. Hospitalisations by Age Group', id: 'chartAgeBar', fn: FNC.ageBar, rows: () => FN.filter(state) },
     Heat:  { title: '4. Age Group × Year Heatmap', id: 'chartHeat', fn: FNC.heat, rows: () => FN.filter(state, ['age', 'year']) },
     Dumb:  { title: '5. Age Profile Comparison (Dumbbell)', id: 'chartDumb', fn: FNC.dumb, rows: () => FN.filter(state, ['age']) }
   };
