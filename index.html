@@ -1,438 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospitalised Injuries from Road Crashes in Australia (2011–2021)</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- D3.js CDN -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <!-- Google Fonts (Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/accessibility.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hospitalised Injuries from Road Crashes in Australia | Hospitalisation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="h-screen w-screen flex flex-row overflow-hidden bg-[#F3F5F4]">
+<body>
 
-    <!-- 1. LEFT SIDEBAR -->
-    <aside class="w-64 h-full bg-teal-sidebar text-white flex-shrink-0 flex flex-col justify-between p-4 overflow-hidden relative z-30 shadow-xl">
-        <div>
-            <!-- BRAND LOGO -->
-            <div class="flex items-center space-x-3 mb-6 pt-1">
-                <div class="w-9 h-9 flex-shrink-0 relative flex items-center justify-center">
-                    <svg viewBox="0 0 100 100" class="w-full h-full">
-                        <path d="M 10 90 Q 50 10 90 90" fill="none" stroke="#E67E22" stroke-width="8" stroke-linecap="round"/>
-                        <path d="M 25 85 Q 50 25 75 85" fill="none" stroke="#27AE60" stroke-width="6" stroke-linecap="round"/>
-                        <path d="M 40 80 Q 50 40 60 80" fill="none" stroke="#F1C40F" stroke-width="4" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-xs font-extrabold uppercase tracking-wider leading-tight text-white">Road Safety</div>
-                    <div class="text-xs font-light uppercase tracking-wider text-teal-200">Australia</div>
-                </div>
-            </div>
+<aside class="sidebar">
+  <div>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 90Q50 10 90 90" fill="none" stroke="#0072B2" stroke-width="8" stroke-linecap="round"/><path d="M25 85Q50 25 75 85" fill="none" stroke="#009E73" stroke-width="6" stroke-linecap="round"/><path d="M40 80Q50 40 60 80" fill="none" stroke="#E69F00" stroke-width="4" stroke-linecap="round"/></svg>
+      <div><b>Road Safety</b><span>Australia</span></div>
+    </div>
+    <nav class="nav" aria-label="Pages">
+      <a class="active" href="index.html" aria-current="page">Hospitalisation</a>
+      <a href="first-nations.html">First Nations Peoples</a>
+      <a href="states.html">States &amp; Territories</a>
+    </nav>
+  </div>
+  <div class="side-foot">
+    <p class="t1">Safer roads.</p><p class="t2">Healthier communities.</p><div class="bar"></div>
+    <p class="src">Source: BITRE, Hospitalised Injury Data, 2011–2021 (national, traffic crashes only). Counts are not adjusted for population size. Unknown age is excluded from age charts.</p>
+  </div>
+</aside>
 
-            <!-- SIDEBAR NAV ITEMS -->
-            <nav class="space-y-2">
-                <button onclick="switchTab('hospitalisation')" id="side-nav-hospitalisation" 
-                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-teal-100 hover:bg-teal-900/60 hover:text-white transition-all duration-200">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    <span>Hospitalisation</span>
-                </button>
+<main class="main">
+  <header class="topbar">
+    <div class="title">
+      <h1>Hospitalised Injuries from Road Crashes in Australia</h1>
+      <p>2011–2021 &nbsp;|&nbsp; Bureau of Infrastructure and Transport Research Economics (BITRE)</p>
+    </div>
+    <button id="resetBtn" class="reset" type="button">Reset filters</button>
+  </header>
 
-                <button onclick="switchTab('firstnations')" id="side-nav-firstnations" 
-                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 bg-white text-teal-dark shadow-md">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                    <span>First Nations Peoples</span>
-                </button>
+  <section class="card filters" aria-label="Filters">
+    <div class="f"><label for="filterYear">Year</label><select id="filterYear"></select></div>
+    <div class="f"><label for="filterSex">Sex</label><select id="filterSex"></select></div>
+    <div class="f"><label for="filterUser">Road user</label><select id="filterUser"></select></div>
+    <div class="f"><label for="filterAge">Age group</label><select id="filterAge"></select></div>
+  </section>
 
-                <button onclick="switchTab('states')" id="side-nav-states" 
-                    class="side-nav-btn w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-teal-100 hover:bg-teal-900/60 hover:text-white transition-all duration-200">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
-                    <span>States &amp; Territories</span>
-                </button>
-            </nav>
-        </div>
+  <section class="kpis" aria-live="polite">
+    <div class="card kpi" style="--c:#0072B2"><div><div class="v" id="k1v">–</div><div class="n">Total hospitalisations</div><div class="s" id="k1s"></div></div></div>
+    <div class="card kpi" style="--c:#D55E00"><div><div class="v" id="k2v">–</div><div class="n">Avg bed days per case</div><div class="s" id="k2s"></div></div></div>
+    <div class="card kpi" style="--c:#CC79A7"><div><div class="v" id="k3v">–</div><div class="n">Died in care (≤30 days)</div><div class="s" id="k3s"></div></div></div>
+    <div class="card kpi" style="--c:#009E73"><div><div class="v" id="k4v">–</div><div class="n">Peak month</div><div class="s" id="k4s"></div></div></div>
+  </section>
 
-        <!-- BOTTOM SIDEBAR SILHOUETTE & TAGLINE -->
-        <div class="pt-4 border-t border-teal-800/60 relative overflow-hidden">
-            <div class="w-full h-14 opacity-30 mb-1 relative">
-                <svg viewBox="0 0 300 100" class="w-full h-full" preserveAspectRatio="none">
-                    <rect x="10" y="40" width="15" height="60" fill="#88CCEE"/>
-                    <rect x="30" y="20" width="22" height="80" fill="#88CCEE"/>
-                    <rect x="55" y="50" width="18" height="50" fill="#88CCEE"/>
-                    <rect x="76" y="30" width="25" height="70" fill="#88CCEE"/>
-                    <rect x="105" y="10" width="20" height="90" fill="#88CCEE"/>
-                    <rect x="130" y="45" width="25" height="55" fill="#88CCEE"/>
-                    <rect x="160" y="25" width="30" height="75" fill="#88CCEE"/>
-                    <rect x="195" y="40" width="20" height="60" fill="#88CCEE"/>
-                    <rect x="220" y="15" width="25" height="85" fill="#88CCEE"/>
-                    <rect x="250" y="35" width="40" height="65" fill="#88CCEE"/>
-                    <path d="M 0 95 Q 120 40 300 95" stroke="#F1C40F" stroke-width="4" fill="none"/>
-                </svg>
-            </div>
-            <p class="text-[11px] font-medium text-teal-200">Safer roads.</p>
-            <p class="text-[11px] font-semibold text-white">Healthier communities.</p>
-            <div class="w-7 h-1 bg-amber-400 rounded-full mt-1.5"></div>
-        </div>
-    </aside>
+  <section class="row row1">
+    <article class="card chart">
+      <h3><span class="dot"></span>Who is hurt, in what crash type, and where do they live?<span class="tools"><button class="zoom" type="button" data-zoom="Sankey" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subSankey"></p>
+      <div class="body" id="chartSankey"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Road user mix by age group<span class="tools"><button class="zoom" type="button" data-zoom="Meki" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subMeki"></p>
+      <div class="legend" id="legUser" role="group" aria-label="Road user legend (click to filter)"></div>
+      <div class="body" id="chartMeki"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Crash Type Distribution<span class="tools"><button class="zoom" type="button" data-zoom="Donut" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subDonut"></p>
+      <div class="body" id="chartDonut"></div>
+    </article>
+  </section>
 
-    <!-- 2. MAIN DASHBOARD CONTENT AREA -->
-    <main class="flex-1 h-full p-2.5 flex flex-col min-w-0 overflow-hidden space-y-2">
+  <section class="row row2">
+    <article class="card chart">
+      <h3><span class="dot"></span>Average Bed Days per Case
+        <span class="tools"><span class="seg" role="group" aria-label="Group by"><button data-bed="age" class="on">Age</button><button data-bed="user">Road user</button></span><button class="zoom" type="button" data-zoom="Bed" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subBed"></p>
+      <div class="body" id="chartBed"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>Seasonality: Month &amp; Year<span class="tools"><span class="legend static" id="legHeat"></span><button class="zoom" type="button" data-zoom="Season" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subSeason"></p>
+      <div class="body" id="chartSeason"></div>
+    </article>
+  </section>
+  <p class="foot">Raw counts, not rates: jurisdictions and groups differ in population size. Hospitalisations = BITRE "Hospitalisations" field (traffic category only). Bed days include later transfer episodes. Unknown age is excluded from age charts.</p>
+</main>
 
-        <!-- HEADER BANNER -->
-        <header class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden flex-shrink-0">
-            <div class="flex items-center justify-between px-4 py-2.5">
-                <div class="z-10 flex-1">
-                    <h1 class="text-lg font-extrabold text-slate-900 tracking-tight leading-tight">
-                        Hospitalised Injuries from Road Crashes in Australia
-                    </h1>
-                    <p class="text-[11px] text-slate-500 font-medium">
-                        2011 – 2021 &nbsp;|&nbsp; Bureau of Infrastructure and Transport Research Economics (BITRE)
-                    </p>
-                </div>
-                <div class="flex items-center gap-2 z-10 flex-shrink-0">
-                    <button onclick="switchTab('hospitalisation')" id="top-pill-hospitalisation" 
-                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200">
-                        Hospitalisation
-                    </button>
-                    <button onclick="switchTab('firstnations')" id="top-pill-firstnations" 
-                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 bg-teal-dark text-white shadow-sm">
-                        First Nations Peoples
-                    </button>
-                    <button onclick="switchTab('states')" id="top-pill-states" 
-                        class="top-pill-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 bg-slate-100 text-slate-600 hover:bg-slate-200">
-                        States &amp; Territories
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- TEAMMATE PLACEHOLDER BANNER -->
-        <div id="teammate-placeholder" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3 text-amber-800 text-xs font-semibold flex items-center justify-between flex-shrink-0">
-            <span>This section is reserved for your teammate's data visualization module.</span>
-            <button onclick="switchTab('firstnations')" class="underline text-amber-900 font-bold ml-2">Back to First Nations Peoples</button>
-        </div>
-
-        <!-- DASHBOARD BODY CONTAINER -->
-        <div id="dashboard-content-area" class="flex-1 flex flex-col min-h-0 space-y-2">
-
-            <!-- FILTER BAR -->
-            <section class="grid grid-cols-4 gap-2 flex-shrink-0">
-                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
-                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <label for="filterYear" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Year</label>
-                        <select id="filterYear" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
-                            <option value="ALL" selected>All Years (2011–2021)</option>
-                            <option value="2011">2011</option>
-                            <option value="2012">2012</option>
-                            <option value="2013">2013</option>
-                            <option value="2014">2014</option>
-                            <option value="2015">2015</option>
-                            <option value="2016">2016</option>
-                            <option value="2017">2017</option>
-                            <option value="2018">2018</option>
-                            <option value="2019">2019</option>
-                            <option value="2020">2020</option>
-                            <option value="2021">2021</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
-                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <label for="filterState" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">State / Territory</label>
-                        <select id="filterState" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
-                            <option value="ALL" selected>All States</option>
-                            <option value="NSW">NSW</option>
-                            <option value="VIC">VIC</option>
-                            <option value="QLD">QLD</option>
-                            <option value="WA">WA</option>
-                            <option value="SA">SA</option>
-                            <option value="TAS">TAS</option>
-                            <option value="NT">NT</option>
-                            <option value="ACT">ACT</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
-                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <label for="filterUser" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Road User</label>
-                        <select id="filterUser" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
-                            <option value="ALL" selected>All Road Users</option>
-                            <option value="Car driver/passenger">Car Driver/Passenger</option>
-                            <option value="Motorcyclist">Motorcyclist</option>
-                            <option value="Pedestrian">Pedestrian</option>
-                            <option value="Pedal cyclist">Pedal Cyclist</option>
-                            <option value="Pick-up truck/van">Pick-up truck/van</option>
-                            <option value="Heavy transport">Heavy transport</option>
-                            <option value="Bus occupant">Bus occupant</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg px-2.5 py-1.5 border border-slate-200 shadow-sm flex items-center space-x-2">
-                    <div class="p-1.5 bg-slate-100 rounded-md text-slate-600">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <label for="filterAge" class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Age Group</label>
-                        <select id="filterAge" autocomplete="off" onchange="applyFilters()" class="w-full bg-transparent text-xs font-bold text-slate-800 focus:outline-none cursor-pointer py-0">
-                            <option value="ALL" selected>All Age Groups</option>
-                            <option value="0-7">0–7</option>
-                            <option value="8-16">8–16</option>
-                            <option value="17-25">17–25</option>
-                            <option value="26-39">26–39</option>
-                            <option value="40-64">40–64</option>
-                            <option value="65+">65+</option>
-                        </select>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. KPI CARDS ROW -->
-            <section class="grid grid-cols-4 gap-2 flex-shrink-0">
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-emerald-700 flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div id="kpi1-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">18,658</div>
-                            <div class="text-[10px] font-medium text-slate-400">First Nations Hospitalisations</div>
-                            <div id="kpi1-sub" class="text-[9px] font-bold text-emerald-600 flex items-center gap-1">
-                                <span>↑ 90.2%</span> <span class="text-slate-400 font-normal">increase (2011–2021)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 4h8m-4 4h4m-8 4h8M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div id="kpi2-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">52.3%</div>
-                            <div id="kpi2-label" class="text-[10px] font-medium text-slate-400">Car Driver &amp; Passenger</div>
-                        </div>
-                    </div>
-                    <div class="w-8 h-8 flex-shrink-0">
-                        <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#FED7AA" stroke-width="4.5"/>
-                            <path id="kpi2-donut" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#EA580C" stroke-width="4.5" stroke-dasharray="52.3, 100"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div id="kpi3-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">30.9%</div>
-                            <div id="kpi3-label" class="text-[10px] font-medium text-slate-400">Peak Age Group (17–25)</div>
-                        </div>
-                    </div>
-                    <div class="w-8 h-8 flex-shrink-0">
-                        <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#F3E8FF" stroke-width="4.5"/>
-                            <path id="kpi3-donut" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#9333EA" stroke-width="4.5" stroke-dasharray="30.9, 100"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div id="kpi4-value" class="text-xl font-black text-slate-900 tracking-tight leading-tight">1,696</div>
-                            <div class="text-[10px] font-medium text-slate-400">Annual Average Cases</div>
-                        </div>
-                    </div>
-                    <div class="flex items-end space-x-1 h-6">
-                        <div class="w-1 bg-teal-200 rounded-t h-2"></div>
-                        <div class="w-1 bg-teal-300 rounded-t h-3"></div>
-                        <div class="w-1 bg-teal-400 rounded-t h-4"></div>
-                        <div class="w-1 bg-teal-500 rounded-t h-5"></div>
-                        <div class="w-1 bg-teal-600 rounded-t h-5"></div>
-                        <div class="w-1 bg-teal-700 rounded-t h-6"></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. MIDDLE CHARTS ROW -->
-            <section class="grid grid-cols-2 gap-2 flex-1 min-h-0">
-                <!-- CHART 1: Annual Hospitalisations Trend (Line Chart) -->
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col h-full min-h-0">
-                    <div class="flex items-center space-x-2 mb-1.5 flex-shrink-0">
-                        <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                        </svg>
-                        <h3 class="text-xs font-bold text-slate-900">1. Annual Hospitalisations Trend (2011–2021)</h3>
-                    </div>
-                    <div class="flex-1 w-full min-h-0 relative">
-                        <canvas id="chartTrend" class="absolute inset-0 w-full h-full"></canvas>
-                    </div>
-                </div>
-
-                <!-- CHART 3: Hospitalisations by Road User (Horizontal Bar Chart) -->
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col h-full min-h-0">
-                    <div class="flex items-center justify-between mb-1.5 flex-shrink-0">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                            <h3 class="text-xs font-bold text-slate-900">3. Hospitalisations by Road User</h3>
-                        </div>
-                        <span class="text-[9px] font-semibold text-slate-400">Preserves n.p.</span>
-                    </div>
-                    <div class="flex-1 w-full min-h-0 relative">
-                        <canvas id="chartRoadUser" class="absolute inset-0 w-full h-full"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. BOTTOM CHARTS ROW (3 CARDS) -->
-            <section class="grid grid-cols-3 gap-2 flex-1 min-h-0">
-                <!-- CHART 2: Hospitalisations by Age Group (Horizontal Bar Chart) -->
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
-                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
-                            </svg>
-                            <h3 class="text-xs font-bold text-slate-900">2. Hospitalisations by Age Group</h3>
-                        </div>
-                    </div>
-                    <div class="flex-1 w-full min-h-0 relative">
-                        <canvas id="chartAgeGroup" class="absolute inset-0 w-full h-full"></canvas>
-                    </div>
-                </div>
-
-                <!-- CHART 4: Hospitalisations by Age Group & Year (Heatmap Matrix) -->
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
-                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-                            </svg>
-                            <h3 class="text-xs font-bold text-slate-900">4. Age Group × Year Heatmap</h3>
-                        </div>
-                    </div>
-                    <div id="heatmap-matrix-container" class="w-full h-full flex flex-col justify-between py-1 min-h-0"></div>
-                </div>
-
-                <!-- CHART 5: Age Profile Comparison (Dumbbell Chart) -->
-                <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-sm flex flex-col justify-between h-full min-h-0">
-                    <div class="flex items-center justify-between mb-1 flex-shrink-0">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-3.5 h-3.5 text-teal-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                            </svg>
-                            <h3 class="text-xs font-bold text-slate-900">5. Age Profile Comparison (Dumbbell)</h3>
-                        </div>
-                    </div>
-                    <div class="flex-1 w-full min-h-0 relative">
-                        <canvas id="chartAgeDumbbell" class="absolute inset-0 w-full h-full"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. FOOTER CARDS -->
-            <section class="grid grid-cols-2 gap-2 flex-shrink-0">
-                <div class="bg-white rounded-xl p-2.5 border border-slate-200/80 shadow-sm flex items-start space-x-3">
-                    <div class="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-500 flex-shrink-0">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="text-xs font-bold text-slate-900 mb-0.5">Key Insights (First Nations)</h4>
-                        <ul class="text-[10px] text-slate-600 space-y-0.5 list-disc pl-3">
-                            <li id="insight1">Hospitalisations rose from 1,167 (2011) to 2,220 (2021), a 90.2% total increase over eleven years.</li>
-                            <li id="insight2">Young adults (17–25) account for 30.9% of First Nations hospitalisations vs 19.7% for Non-Indigenous Australians.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl p-2.5 border border-slate-200/80 shadow-sm flex items-start justify-between relative overflow-hidden">
-                    <div class="flex items-start space-x-3 z-10 flex-1">
-                        <div class="w-7 h-7 rounded-lg bg-sky-50 border border-sky-200 flex items-center justify-center text-sky-600 flex-shrink-0">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-xs font-bold text-slate-900 mb-0.5">Data Source &amp; Notes</h4>
-                            <p class="text-[10px] text-slate-500 leading-tight">
-                                Source: BITRE, First Nations Hospitalised Injuries, 2011–2021 (Worksheets T1, T2, T3).<br>
-                                Data processed via KNIME Analytics Platform. Values labeled 'n.p.' are preserved as suppressed.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="absolute -right-3 -bottom-5 w-28 h-16 opacity-80 pointer-events-none">
-                        <svg viewBox="0 0 150 100" class="w-full h-full">
-                            <path d="M 0 100 Q 80 10 150 70" fill="none" stroke="#2E7D75" stroke-width="24"/>
-                            <path d="M 0 100 Q 80 10 150 70" fill="none" stroke="#F1C40F" stroke-width="2" stroke-dasharray="6,6"/>
-                        </svg>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- JS MODULES -->
-    <script src="js/constants.js"></script>
-    <script src="js/loaded_data.js"></script>
-    <script src="js/interactive.js"></script>
-    <script src="js/accessibility.js"></script>
-    <script src="js/trend_chart.js"></script>
-    <script src="js/age_group_chart.js"></script>
-    <script src="js/road_user_chart.js"></script>
-    <script src="js/age_year_heatmap.js"></script>
-    <script src="js/age_profile_dumbbell.js"></script>
-    <script src="js/main.js"></script>
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle"></h2>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <p class="sub" id="modalSub"></p>
+    <div class="body" id="modalChart"></div>
+  </div>
+</div>
+<div id="tip" class="tip" role="tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/loaded_data.js"></script>
+<script src="js/hospitalisation_chart.js"></script>
+<script src="js/interactive.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
