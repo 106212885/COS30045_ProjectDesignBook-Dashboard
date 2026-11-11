@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Nations Peoples | Hospitalised Injuries from Road Crashes in Australia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<aside class="sidebar">
+  <div>
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M10 90Q50 10 90 90" fill="none" stroke="#0072B2" stroke-width="8" stroke-linecap="round"/><path d="M25 85Q50 25 75 85" fill="none" stroke="#009E73" stroke-width="6" stroke-linecap="round"/><path d="M40 80Q50 40 60 80" fill="none" stroke="#E69F00" stroke-width="4" stroke-linecap="round"/></svg>
+      <div><b>Road Safety</b><span>Australia</span></div>
+    </div>
+    <nav class="nav" aria-label="Pages">
+      <a href="index.html">Hospitalisation</a>
+      <a class="active" href="first-nations.html" aria-current="page">First Nations Peoples</a>
+      <a href="states.html">States &amp; Territories</a>
+    </nav>
+  </div>
+  <div class="side-foot">
+    <p class="t1">Safer roads.</p><p class="t2">Healthier communities.</p><div class="bar"></div>
+    <p class="src">Source: BITRE, First Nations Hospitalised Injuries, 2011–2021. Counts are not adjusted for population size.</p>
+  </div>
+</aside>
+
+<main class="main fn">
+  <header class="topbar">
+    <div class="title">
+      <h1>Hospitalised Injuries from Road Crashes in Australia</h1>
+      <p>First Nations Peoples &nbsp;|&nbsp; 2011–2021 &nbsp;|&nbsp; Bureau of Infrastructure and Transport Research Economics (BITRE)</p>
+    </div>
+    <button id="resetBtn" class="reset" type="button">Reset filters</button>
+  </header>
+
+  <section class="card filters" aria-label="Filters">
+    <div class="f"><label for="filterYear">Year</label><select id="filterYear"></select></div>
+    <div class="f"><label for="filterState">State / territory (estimated)</label><select id="filterState"></select></div>
+    <div class="f"><label for="filterUser">Road user</label><select id="filterUser"></select></div>
+    <div class="f"><label for="filterAge">Age group</label><select id="filterAge"></select></div>
+  </section>
+
+  <section class="kpis" aria-live="polite">
+    <div class="card kpi" style="--c:#0072B2"><div><div class="v" id="k1v">–</div><div class="n">First Nations hospitalisations</div><div class="s" id="k1s"></div></div></div>
+    <div class="card kpi" style="--c:#D55E00"><div><div class="v" id="k2v">–</div><div class="n">Car driver &amp; passenger share</div><div class="s" id="k2s"></div></div></div>
+    <div class="card kpi" style="--c:#CC79A7"><div><div class="v" id="k3v">–</div><div class="n" id="k3n">Peak age group</div><div class="s" id="k3s"></div></div></div>
+    <div class="card kpi" style="--c:#009E73"><div><div class="v" id="k4v">–</div><div class="n">Annual average cases</div><div class="s" id="k4s"></div></div></div>
+  </section>
+
+  <section class="row row1">
+    <article class="card chart">
+      <h3><span class="dot"></span>1. Annual Hospitalisations Trend (2011–2021)<span class="tools"><button class="zoom" type="button" data-zoom="Trend" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subTrend"></p>
+      <div class="body" id="chartTrend"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>2. Hospitalisations by Age Group<span class="tools"><button class="zoom" type="button" data-zoom="AgeBar" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subAgeBar"></p>
+      <div class="body" id="chartAgeBar"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>3. Hospitalisations by Road User<span class="tools"><button class="zoom" type="button" data-zoom="User" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subUser"></p>
+      <div class="body" id="chartUser"></div>
+    </article>
+  </section>
+
+  <section class="row row2 fnr">
+    <article class="card chart">
+      <h3><span class="dot"></span>4. Age Group × Year Heatmap<span class="tools"><span class="legend static" id="legHeat"></span><button class="zoom" type="button" data-zoom="Heat" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subHeat"></p>
+      <div class="body" id="chartHeat"></div>
+    </article>
+    <article class="card chart">
+      <h3><span class="dot"></span>5. Age Profile Comparison (Dumbbell)<span class="tools"><span class="legend static"><span><i style="background:#0072B2;border-radius:50%"></i>First Nations</span><span><i style="background:#E69F00;border-radius:50%"></i>Non-Indigenous</span></span><button class="zoom" type="button" data-zoom="Dumb" aria-label="Expand chart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></span></h3>
+      <p class="sub" id="subDumb"></p>
+      <div class="body" id="chartDumb"></div>
+    </article>
+  </section>
+
+  <section class="info">
+    <div class="card"><h4>Key Insights (First Nations)</h4><ul><li id="insight1"></li><li id="insight2"></li></ul></div>
+    <div class="card"><h4>Data Source &amp; Notes</h4><p>Source: BITRE, First Nations Hospitalised Injuries, 2011–2021 (Worksheets T1, T2, T3), processed in KNIME. Hatched cells are suppressed (n.p.) values, shown as estimates. State and cross-filtered values are estimated by proportional allocation of the published totals.</p></div>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head"><h2 id="modalTitle"></h2>
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <p class="sub" id="modalSub"></p>
+    <div class="body" id="modalChart"></div>
+  </div>
+</div>
+<div id="tip" class="tip" role="tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="js/constants.js"></script>
+<script src="js/loaded_data.js"></script>
+<script src="js/interactive.js"></script>
+<script src="js/trend_chart.js"></script>
+<script src="js/age_group_chart.js"></script>
+<script src="js/road_user_chart.js"></script>
+<script src="js/age_year_heatmap.js"></script>
+<script src="js/age_profile_dumbbell.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
