@@ -1,6 +1,1 @@
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        resetFilters();
-        applyFilters();
-    }
-});
+/* Reserved for optional accessibility enhancements; original dashboard interactions are preserved. */
