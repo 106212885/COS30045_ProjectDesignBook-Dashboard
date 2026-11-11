@@ -1,15 +1,11 @@
 # COS30045 Project Design Dashboard
 
-This project uses the exact folder and file naming structure supplied in `COS30045_ProjectDesign_Structure.zip`, with the dashboard pages, visual design, chart implementations, and source data taken from `Combine page1&2.zip`.
-
 ## Run locally
 
 1. Open this folder in Visual Studio Code.
 2. Start the project with the Live Server extension.
 3. Open `index.html` in the browser.
 4. Use the navigation links to open First Nations Peoples and States & Territories.
-
-Do not open the HTML files directly from File Explorer: the dashboards load CSV data using browser requests and should be served through Live Server or another local web server.
 
 ## Project structure
 
