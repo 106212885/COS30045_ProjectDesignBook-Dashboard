@@ -1,48 +1,68 @@
-/**
- * Dynamic Multi-Dimensional Micro Dataset Engine for Power BI Cross-Filtering
- * Stores full breakdown array: { y: Year, s: State, u: RoadUser, a: AgeGroup, v: Count }
- */
-const FIRST_NATIONS_RECORDS = (function() {
-    const years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
-    const yearTotals = {
-        2011: 1167, 2012: 1404, 2013: 1414, 2014: 1407, 2015: 1600,
-        2016: 1669, 2017: 1733, 2018: 1930, 2019: 1856, 2020: 2290, 2021: 2220
-    };
-    const stateWeights = { QLD: 0.32, NSW: 0.28, WA: 0.19, NT: 0.12, VIC: 0.04, SA: 0.03, TAS: 0.015, ACT: 0.005 };
-    const userWeights = {
-        "Car driver/passenger": 0.523,
-        "Motorcyclist": 0.235,
-        "Pedestrian": 0.106,
-        "Pedal cyclist": 0.093,
-        "Pick-up truck/van": 0.013,
-        "Heavy transport": 0.015,
-        "Bus occupant": 0.015
-    };
-    const ageWeights = { "17-25": 0.309, "26-39": 0.269, "40-64": 0.232, "8-16": 0.131, "0-7": 0.039, "65+": 0.020 };
+// Hospitalisation and First Nations data loaders.
 
-    const records = [];
-    years.forEach(y => {
-        const total = yearTotals[y];
-        Object.keys(stateWeights).forEach(st => {
-            Object.keys(userWeights).forEach(usr => {
-                Object.keys(ageWeights).forEach(ag => {
-                    const val = Math.round(total * stateWeights[st] * userWeights[usr] * ageWeights[ag]);
-                    if (val > 0) {
-                        records.push({ y: y, s: st, u: usr, a: ag, v: val });
-                    }
-                });
-            });
-        });
+const Data = {
+  rows: [],
+  async load() {
+    this.rows = await d3.csv(CFG.DATA_URL, d => ({
+      year: +d.year, month: d.month, age: d.age, sex: d.sex, user: d.road_user, cp: d.counterparty,
+      rem: d.remoteness, hosp: +d.hosp, bed: +d.bed_days, died: +d.died
+    }));
+    return this.rows;
+  },
+
+  filter(st, skip = []) {
+    const ok = (k, v) => skip.includes(k) || st[k] === 'ALL' || st[k] === v;
+    return this.rows.filter(r => ok('year', r.year) && ok('sex', r.sex) && ok('user', r.user) && ok('age', r.age));
+  },
+  sum: (rows, f = 'hosp') => d3.sum(rows, r => r[f]),
+  avgBed: rows => { const h = d3.sum(rows, r => r.hosp); return h ? d3.sum(rows, r => r.bed) / h : 0; }
+};
+
+const FN = {
+  YEARS: d3.range(2011, 2022),
+  AGES: ['0-7', '8-16', '17-25', '26-39', '40-64', '65+'],
+  STATES: ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'NT', 'ACT'],
+  STATE_W: { QLD: 0.32, NSW: 0.28, WA: 0.19, NT: 0.12, VIC: 0.04, SA: 0.03, TAS: 0.015, ACT: 0.005 },   // estimated weights
+  USERS: ['Car driver/passenger', 'Motorcyclist', 'Pedestrian', 'Pedal cyclist', 'Pick-up truck/van', 'Heavy transport', 'Bus occupant'],
+  USER_LABEL: {
+    'Car driver, passenger or unknown position': 'Car driver/passenger', 'Motorcyclist': 'Motorcyclist', 'Pedestrian': 'Pedestrian',
+    'Pedal cyclist': 'Pedal cyclist', 'Pick-up truck or van occupant': 'Pick-up truck/van',
+    'Heavy transport driver, passenger or unknown position': 'Heavy transport', 'Bus occupant': 'Bus occupant'
+  },
+  total: {}, ageYear: {}, np: new Set(), userW: {}, bench: {}, records: [],
+
+  async load() {
+    const b = 'data/First Nations People/';
+    const [tr, ay, ru, bm] = await Promise.all(['chart1_trend', 'chart4_age_group_year', 'chart3_road_user_2021', 'chart5_age_profile_comparison'].map(f => d3.csv(b + f + '.csv')));
+    const num = v => (v === 'n.p.' ? null : +v);
+    tr.forEach(d => { this.total[+d.Year] = +d.Cases; });
+    this.AGES.forEach(a => { this.ageYear[a] = {}; });
+    ay.forEach(d => { this.ageYear[d.Age_Group][+d.Year] = num(d.Hospitalisations); });
+
+    // estimate suppressed age x year cells: remainder of the yearly total, split by each age's average known size
+    const avg = {}; this.AGES.forEach(a => { avg[a] = d3.mean(this.YEARS.map(y => this.ageYear[a][y]).filter(v => v != null)); });
+    this.YEARS.forEach(y => {
+      const miss = this.AGES.filter(a => this.ageYear[a][y] == null); if (!miss.length) return;
+      const rem = this.total[y] - d3.sum(this.AGES, a => this.ageYear[a][y] || 0), ws = d3.sum(miss, a => avg[a]);
+      miss.forEach(a => { this.ageYear[a][y] = rem * avg[a] / ws; this.np.add(a + '|' + y); });
     });
-    return records;
-})();
 
-// Non-Indigenous age benchmark distribution constants
-const NON_INDIGENOUS_AGE_BENCHMARK = {
-    '0-7': 1.7,
-    '8-16': 6.9,
-    '17-25': 19.7,
-    '26-39': 23.6,
-    '40-64': 33.6,
-    '65+': 14.6
+    // road-user shares from 2021; suppressed users share the remainder equally
+    const ruv = {}; ru.forEach(d => { ruv[this.USER_LABEL[d.Road_User]] = num(d.Hospitalisations); });
+    const t21 = this.total[2021], miss = this.USERS.filter(u => ruv[u] == null);
+    const rem = t21 - d3.sum(this.USERS.filter(u => ruv[u] != null), u => ruv[u]);
+    miss.forEach(u => { ruv[u] = rem / miss.length; });
+    this.USERS.forEach(u => { this.userW[u] = ruv[u] / t21; });
+
+    bm.forEach(d => { this.bench[d.Age_Group] = { fn: +d.FirstNations_Percentage, non: +d.NonIndigenous_Percentage }; });
+
+    this.YEARS.forEach(y => this.AGES.forEach(a => this.USERS.forEach(u => this.STATES.forEach(s =>
+      this.records.push({ y, a, u, s, v: this.ageYear[a][y] * this.userW[u] * this.STATE_W[s] })))));
+  },
+  /** Apply filters; `skip` = filter keys a chart handles itself (highlight instead of remove). */
+  filter(st, skip = []) {
+    const ok = (k, v) => skip.includes(k) || st[k] === 'ALL' || st[k] === v;
+    return this.records.filter(r => ok('year', r.y) && ok('state', r.s) && ok('user', r.u) && ok('age', r.a));
+  },
+  sum: rows => d3.sum(rows, r => r.v)
 };
