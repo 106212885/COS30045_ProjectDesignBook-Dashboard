@@ -1,103 +1,22 @@
-/**
- * Chart 5: Age Profile Dumbbell Comparison
- * Dynamically calculates First Nations % share vs Non-Indigenous benchmark
- */
-let chartAgeDumbbellInstance = null;
-
-function renderAgeProfileDumbbell(records) {
-    const ctx = document.getElementById('chartAgeDumbbell').getContext('2d');
-    if (chartAgeDumbbellInstance) chartAgeDumbbellInstance.destroy();
-
-    const ageKeys = ['0-7', '8-16', '17-25', '26-39', '40-64', '65+'];
-    const totalCases = records.reduce((sum, r) => sum + r.v, 0);
-
-    const fnValues = ageKeys.map(ag => {
-        const agCount = records.filter(r => r.a === ag).reduce((sum, r) => sum + r.v, 0);
-        return totalCases > 0 ? parseFloat(((agCount / totalCases) * 100).toFixed(1)) : 0;
-    });
-
-    const nonIndValues = ageKeys.map(ag => NON_INDIGENOUS_AGE_BENCHMARK[ag]);
-
-    const dumbbellLinePlugin = {
-        id: 'dumbbellLine',
-        beforeDatasetsDraw(chart) {
-            const { ctx } = chart;
-            const meta0 = chart.getDatasetMeta(0);
-            const meta1 = chart.getDatasetMeta(1);
-            
-            meta0.data.forEach((pt0, index) => {
-                const pt1 = meta1.data[index];
-                if (pt0 && pt1) {
-                    ctx.save();
-                    ctx.beginPath();
-                    ctx.moveTo(pt0.x, pt0.y);
-                    ctx.lineTo(pt1.x, pt1.y);
-                    ctx.strokeStyle = '#CBD5E1';
-                    ctx.lineWidth = 2.5;
-                    ctx.stroke();
-                    ctx.restore();
-                }
-            });
-        }
-    };
-
-    chartAgeDumbbellInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ageKeys,
-            datasets: [
-                {
-                    label: 'First Nations %',
-                    data: fnValues,
-                    borderColor: 'transparent',
-                    pointBackgroundColor: '#143736',
-                    pointBorderColor: '#FFFFFF',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                },
-                {
-                    label: 'Non-Indigenous %',
-                    data: nonIndValues,
-                    borderColor: 'transparent',
-                    pointBackgroundColor: '#E67E22',
-                    pointBorderColor: '#FFFFFF',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }
-            ]
-        },
-        plugins: [dumbbellLinePlugin],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
-                    align: 'end',
-                    labels: { font: { family: 'Inter', size: 9 }, usePointStyle: true, boxWidth: 6 }
-                },
-                tooltip: {
-                    backgroundColor: '#143736',
-                    padding: 8,
-                    cornerRadius: 6,
-                    callbacks: {
-                        label: (ctx) => ` ${ctx.dataset.label}: ${ctx.raw}%`
-                    }
-                }
-            },
-            scales: {
-                x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 9 } } },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: value => value + '%',
-                        font: { family: 'Inter', size: 9 }
-                    },
-                    grid: { color: '#F1F5F9' }
-                }
-            }
-        }
-    });
-}
+/* 5. Dumbbell: age profile, First Nations % vs non-Indigenous % */
+FNC.dumb = (el, rows, st, act) => {
+  const { svg, w, h } = UI.svg(el, 'Dumbbell chart comparing age profile of First Nations and non-Indigenous hospitalisations');
+  const tot = FN.sum(rows), by = d3.rollup(rows, FN.sum, r => r.a);
+  if (!tot) { UI.empty(svg, w, h); return 'No cases match the current filters.'; }
+  const data = FN.AGES.map(a => ({ a, fn: (by.get(a) || 0) / tot * 100, non: FN.bench[a].non }));
+  const m = M({ t: 12, r: 14, b: 22, l: 40 }), iw = w - m.l - m.r, ih = h - m.t - m.b;
+  const x = d3.scalePoint(FN.AGES, [0, iw]).padding(.45), y = d3.scaleLinear([0, d3.max(data, d => Math.max(d.fn, d.non)) * 1.15], [ih, 0]).nice();
+  const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
+  g.append('g').call(UI.styleAxis).call(d3.axisLeft(y).ticks(5).tickSize(-iw).tickFormat(d => d + '%')).select('.domain').remove(); grid(g);
+  g.append('g').call(UI.styleAxis).attr('transform', `translate(0,${ih})`).call(d3.axisBottom(x).tickSize(0)).select('.domain').remove();
+  const d = g.selectAll('g.d').data(data).join('g').attr('class', 'd clickable').attr('opacity', q => hi(st, 'age', q.a) ? 1 : .35)
+    .on('mousemove', (e, q) => UI.showTip(e, `<b>Age ${q.a}</b><br>First Nations: ${q.fn.toFixed(1)}%<br>Non-Indigenous: ${q.non.toFixed(1)}%<br>Gap: ${(q.fn - q.non >= 0 ? '+' : '') + (q.fn - q.non).toFixed(1)} pts<br><i>Click to filter age group</i>`))
+    .on('mouseleave', UI.hideTip.bind(UI)).on('click', (e, q) => act.toggle('age', q.a));
+  d.append('line').attr('x1', q => x(q.a)).attr('x2', q => x(q.a)).attr('y1', q => y(q.fn)).attr('y2', q => y(q.non)).attr('stroke', '#B8C4D2').attr('stroke-width', 3 * UI.k);
+  d.append('circle').attr('cx', q => x(q.a)).attr('cy', q => y(q.non)).attr('r', 6 * UI.k).attr('fill', ORANGE).attr('stroke', '#fff').attr('stroke-width', 2);
+  d.append('circle').attr('cx', q => x(q.a)).attr('cy', q => y(q.fn)).attr('r', 6 * UI.k).attr('fill', BLUE).attr('stroke', '#fff').attr('stroke-width', 2);
+  d.append('text').attr('class', 'halo').attr('x', q => x(q.a) + 11 * UI.k).attr('y', q => y(q.fn)).attr('dy', '.35em').style('font-size', fs(9)).style('font-weight', 700).text(q => q.fn.toFixed(1) + '%');
+  d.append('text').attr('class', 'halo').attr('x', q => x(q.a) + 11 * UI.k).attr('y', q => y(q.non)).attr('dy', '.35em').style('font-size', fs(9)).text(q => q.non.toFixed(1) + '%');
+  const mx = d3.greatest(data, q => q.fn - q.non);
+  return `Largest gap: age ${mx.a} is ${mx.fn.toFixed(1)}% of First Nations cases vs ${mx.non.toFixed(1)}% non-Indigenous.`;
+};
