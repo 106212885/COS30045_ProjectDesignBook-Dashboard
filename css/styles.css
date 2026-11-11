@@ -76,9 +76,11 @@ text{font-family:'Inter',sans-serif;fill:#33455A}.halo{paint-order:stroke;stroke
   .f{padding:5px 14px}.f select{font-size:12px}.f label{font-size:9.5px}
   .kpi{padding:7px 14px 7px 16px}.kpi .v{font-size:19px}.kpi .n{font-size:10.5px}.kpi .s{font-size:10px;margin:0;min-height:0}
   .row1,.row2{height:auto;min-height:0}
-  .row1{grid-template-columns:6fr 4fr 3fr}.row1 .chart,.row2 .chart{height:auto}.row1 .chart:first-child{grid-column:auto}
+  .row1{grid-template-columns:5fr 3.5fr 5fr}.row1 .chart,.row2 .chart{height:auto}.row1 .chart:first-child{grid-column:auto}
   .chart{padding:9px 12px 8px}.chart h3{font-size:12px}
   .sub{font-size:10px;margin:2px 0 3px;min-height:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* Give the Road User chart more room and keep its explanatory text readable. */
+  .row1 .chart:nth-child(3) .sub{white-space:normal;overflow:visible;text-overflow:clip}
   .legend{flex-wrap:nowrap;overflow:hidden;margin-bottom:2px}.legend button{padding:1px 5px;font-size:10px}
   .foot{display:none}
 }
