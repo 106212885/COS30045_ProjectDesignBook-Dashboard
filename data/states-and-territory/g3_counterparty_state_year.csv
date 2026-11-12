@@ -1,0 +1,353 @@
+"State","Year","CounterpartyGroup","Cases","Populations","Rate"
+"ACT",2011,"Car, pick-up or van",177,367985,48.1
+"ACT",2011,"Fixed object",75,367985,20.4
+"ACT",2011,"Non-collision",177,367985,48.1
+"ACT",2011,"Other",108,367985,29.3
+"ACT",2012,"Car, pick-up or van",223,376539,59.2
+"ACT",2012,"Fixed object",77,376539,20.4
+"ACT",2012,"Non-collision",207,376539,55
+"ACT",2012,"Other",94,376539,25
+"ACT",2013,"Car, pick-up or van",186,383257,48.5
+"ACT",2013,"Fixed object",78,383257,20.4
+"ACT",2013,"Non-collision",190,383257,49.6
+"ACT",2013,"Other",119,383257,31
+"ACT",2014,"Car, pick-up or van",191,388799,49.1
+"ACT",2014,"Fixed object",72,388799,18.5
+"ACT",2014,"Non-collision",185,388799,47.6
+"ACT",2014,"Other",94,388799,24.2
+"ACT",2015,"Car, pick-up or van",244,395813,61.6
+"ACT",2015,"Fixed object",76,395813,19.2
+"ACT",2015,"Non-collision",233,395813,58.9
+"ACT",2015,"Other",147,395813,37.1
+"ACT",2016,"Car, pick-up or van",235,403104,58.3
+"ACT",2016,"Fixed object",78,403104,19.3
+"ACT",2016,"Non-collision",211,403104,52.3
+"ACT",2016,"Other",130,403104,32.2
+"ACT",2017,"Car, pick-up or van",221,412025,53.6
+"ACT",2017,"Fixed object",74,412025,18
+"ACT",2017,"Non-collision",219,412025,53.2
+"ACT",2017,"Other",118,412025,28.6
+"ACT",2018,"Car, pick-up or van",283,420379,67.3
+"ACT",2018,"Fixed object",79,420379,18.8
+"ACT",2018,"Non-collision",213,420379,50.7
+"ACT",2018,"Other",137,420379,32.6
+"ACT",2019,"Car, pick-up or van",243,426285,57
+"ACT",2019,"Fixed object",82,426285,19.2
+"ACT",2019,"Non-collision",213,426285,50
+"ACT",2019,"Other",127,426285,29.8
+"ACT",2020,"Car, pick-up or van",184,431213,42.7
+"ACT",2020,"Fixed object",86,431213,19.9
+"ACT",2020,"Non-collision",217,431213,50.3
+"ACT",2020,"Other",142,431213,32.9
+"ACT",2021,"Car, pick-up or van",232,432266,53.7
+"ACT",2021,"Fixed object",82,432266,19
+"ACT",2021,"Non-collision",248,432266,57.4
+"ACT",2021,"Other",178,432266,41.2
+"NSW",2011,"Car, pick-up or van",4679,7218529,64.8
+"NSW",2011,"Fixed object",1543,7218529,21.4
+"NSW",2011,"Non-collision",2349,7218529,32.5
+"NSW",2011,"Other",2047,7218529,28.4
+"NSW",2012,"Car, pick-up or van",4832,7304244,66.2
+"NSW",2012,"Fixed object",1624,7304244,22.2
+"NSW",2012,"Non-collision",2506,7304244,34.3
+"NSW",2012,"Other",2159,7304244,29.6
+"NSW",2013,"Car, pick-up or van",5048,7404032,68.2
+"NSW",2013,"Fixed object",1630,7404032,22
+"NSW",2013,"Non-collision",2690,7404032,36.3
+"NSW",2013,"Other",2053,7404032,27.7
+"NSW",2014,"Car, pick-up or van",5005,7508353,66.7
+"NSW",2014,"Fixed object",1589,7508353,21.2
+"NSW",2014,"Non-collision",2683,7508353,35.7
+"NSW",2014,"Other",2036,7508353,27.1
+"NSW",2015,"Car, pick-up or van",5005,7616168,65.7
+"NSW",2015,"Fixed object",1669,7616168,21.9
+"NSW",2015,"Non-collision",2657,7616168,34.9
+"NSW",2015,"Other",1753,7616168,23
+"NSW",2016,"Car, pick-up or van",5217,7732858,67.5
+"NSW",2016,"Fixed object",1710,7732858,22.1
+"NSW",2016,"Non-collision",2734,7732858,35.4
+"NSW",2016,"Other",1813,7732858,23.4
+"NSW",2017,"Car, pick-up or van",5012,7867936,63.7
+"NSW",2017,"Fixed object",1540,7867936,19.6
+"NSW",2017,"Non-collision",2638,7867936,33.5
+"NSW",2017,"Other",1826,7867936,23.2
+"NSW",2018,"Car, pick-up or van",4134,7980168,51.8
+"NSW",2018,"Fixed object",1410,7980168,17.7
+"NSW",2018,"Non-collision",2511,7980168,31.5
+"NSW",2018,"Other",1739,7980168,21.8
+"NSW",2019,"Car, pick-up or van",4303,8087379,53.2
+"NSW",2019,"Fixed object",1374,8087379,17
+"NSW",2019,"Non-collision",2501,8087379,30.9
+"NSW",2019,"Other",1764,8087379,21.8
+"NSW",2020,"Car, pick-up or van",3730,8167024,45.7
+"NSW",2020,"Fixed object",1405,8167024,17.2
+"NSW",2020,"Non-collision",2545,8167024,31.2
+"NSW",2020,"Other",1594,8167024,19.5
+"NSW",2021,"Car, pick-up or van",3454,8189266,42.2
+"NSW",2021,"Fixed object",1314,8189266,16
+"NSW",2021,"Non-collision",2563,8189266,31.3
+"NSW",2021,"Other",1672,8189266,20.4
+"NT",2011,"Car, pick-up or van",107,231292,46.3
+"NT",2011,"Fixed object",59,231292,25.5
+"NT",2011,"Non-collision",198,231292,85.6
+"NT",2011,"Other",92,231292,39.8
+"NT",2012,"Car, pick-up or van",119,235915,50.4
+"NT",2012,"Fixed object",52,235915,22
+"NT",2012,"Non-collision",216,235915,91.6
+"NT",2012,"Other",109,235915,46.2
+"NT",2013,"Car, pick-up or van",124,241722,51.3
+"NT",2013,"Fixed object",87,241722,36
+"NT",2013,"Non-collision",271,241722,112.1
+"NT",2013,"Other",79,241722,32.7
+"NT",2014,"Car, pick-up or van",145,242894,59.7
+"NT",2014,"Fixed object",80,242894,32.9
+"NT",2014,"Non-collision",272,242894,112
+"NT",2014,"Other",78,242894,32.1
+"NT",2015,"Car, pick-up or van",182,244692,74.4
+"NT",2015,"Fixed object",83,244692,33.9
+"NT",2015,"Non-collision",339,244692,138.5
+"NT",2015,"Other",87,244692,35.6
+"NT",2016,"Car, pick-up or van",168,245678,68.4
+"NT",2016,"Fixed object",121,245678,49.3
+"NT",2016,"Non-collision",304,245678,123.7
+"NT",2016,"Other",116,245678,47.2
+"NT",2017,"Car, pick-up or van",212,247517,85.7
+"NT",2017,"Fixed object",93,247517,37.6
+"NT",2017,"Non-collision",292,247517,118
+"NT",2017,"Other",106,247517,42.8
+"NT",2018,"Car, pick-up or van",240,247058,97.1
+"NT",2018,"Fixed object",129,247058,52.2
+"NT",2018,"Non-collision",362,247058,146.5
+"NT",2018,"Other",101,247058,40.9
+"NT",2019,"Car, pick-up or van",155,246143,63
+"NT",2019,"Fixed object",114,246143,46.3
+"NT",2019,"Non-collision",277,246143,112.5
+"NT",2019,"Other",110,246143,44.7
+"NT",2020,"Car, pick-up or van",206,246235,83.7
+"NT",2020,"Fixed object",128,246235,52
+"NT",2020,"Non-collision",338,246235,137.3
+"NT",2020,"Other",115,246235,46.7
+"NT",2021,"Car, pick-up or van",205,246338,83.2
+"NT",2021,"Fixed object",84,246338,34.1
+"NT",2021,"Non-collision",315,246338,127.9
+"NT",2021,"Other",106,246338,43
+"Qld",2011,"Car, pick-up or van",2113,4476778,47.2
+"Qld",2011,"Fixed object",801,4476778,17.9
+"Qld",2011,"Non-collision",1969,4476778,44
+"Qld",2011,"Other",1439,4476778,32.1
+"Qld",2012,"Car, pick-up or van",2332,4568687,51
+"Qld",2012,"Fixed object",976,4568687,21.4
+"Qld",2012,"Non-collision",2026,4568687,44.3
+"Qld",2012,"Other",1479,4568687,32.4
+"Qld",2013,"Car, pick-up or van",2733,4652824,58.7
+"Qld",2013,"Fixed object",1012,4652824,21.8
+"Qld",2013,"Non-collision",2414,4652824,51.9
+"Qld",2013,"Other",1662,4652824,35.7
+"Qld",2014,"Car, pick-up or van",2737,4719653,58
+"Qld",2014,"Fixed object",1074,4719653,22.8
+"Qld",2014,"Non-collision",2345,4719653,49.7
+"Qld",2014,"Other",1569,4719653,33.2
+"Qld",2015,"Car, pick-up or van",3119,4777692,65.3
+"Qld",2015,"Fixed object",1135,4777692,23.8
+"Qld",2015,"Non-collision",2451,4777692,51.3
+"Qld",2015,"Other",1601,4777692,33.5
+"Qld",2016,"Car, pick-up or van",3380,4845152,69.8
+"Qld",2016,"Fixed object",1302,4845152,26.9
+"Qld",2016,"Non-collision",2376,4845152,49
+"Qld",2016,"Other",1644,4845152,33.9
+"Qld",2017,"Car, pick-up or van",3674,4927629,74.6
+"Qld",2017,"Fixed object",1224,4927629,24.8
+"Qld",2017,"Non-collision",2546,4927629,51.7
+"Qld",2017,"Other",1690,4927629,34.3
+"Qld",2018,"Car, pick-up or van",3749,5009424,74.8
+"Qld",2018,"Fixed object",1271,5009424,25.4
+"Qld",2018,"Non-collision",2707,5009424,54
+"Qld",2018,"Other",1654,5009424,33
+"Qld",2019,"Car, pick-up or van",3885,5093884,76.3
+"Qld",2019,"Fixed object",1322,5093884,26
+"Qld",2019,"Non-collision",2611,5093884,51.3
+"Qld",2019,"Other",1697,5093884,33.3
+"Qld",2020,"Car, pick-up or van",3742,5175245,72.3
+"Qld",2020,"Fixed object",1516,5175245,29.3
+"Qld",2020,"Non-collision",2896,5175245,56
+"Qld",2020,"Other",1647,5175245,31.8
+"Qld",2021,"Car, pick-up or van",4396,5221170,84.2
+"Qld",2021,"Fixed object",1510,5221170,28.9
+"Qld",2021,"Non-collision",2831,5221170,54.2
+"Qld",2021,"Other",1710,5221170,32.8
+"SA",2011,"Car, pick-up or van",961,1639614,58.6
+"SA",2011,"Fixed object",402,1639614,24.5
+"SA",2011,"Non-collision",650,1639614,39.6
+"SA",2011,"Other",346,1639614,21.1
+"SA",2012,"Car, pick-up or van",911,1656725,55
+"SA",2012,"Fixed object",356,1656725,21.5
+"SA",2012,"Non-collision",673,1656725,40.6
+"SA",2012,"Other",371,1656725,22.4
+"SA",2013,"Car, pick-up or van",842,1671488,50.4
+"SA",2013,"Fixed object",350,1671488,20.9
+"SA",2013,"Non-collision",672,1671488,40.2
+"SA",2013,"Other",357,1671488,21.4
+"SA",2014,"Car, pick-up or van",914,1686945,54.2
+"SA",2014,"Fixed object",351,1686945,20.8
+"SA",2014,"Non-collision",741,1686945,43.9
+"SA",2014,"Other",375,1686945,22.2
+"SA",2015,"Car, pick-up or van",917,1700668,53.9
+"SA",2015,"Fixed object",394,1700668,23.2
+"SA",2015,"Non-collision",746,1700668,43.9
+"SA",2015,"Other",410,1700668,24.1
+"SA",2016,"Car, pick-up or van",1064,1712843,62.1
+"SA",2016,"Fixed object",387,1712843,22.6
+"SA",2016,"Non-collision",765,1712843,44.7
+"SA",2016,"Other",438,1712843,25.6
+"SA",2017,"Car, pick-up or van",890,1723923,51.6
+"SA",2017,"Fixed object",372,1723923,21.6
+"SA",2017,"Non-collision",688,1723923,39.9
+"SA",2017,"Other",444,1723923,25.8
+"SA",2018,"Car, pick-up or van",926,1736527,53.3
+"SA",2018,"Fixed object",384,1736527,22.1
+"SA",2018,"Non-collision",729,1736527,42
+"SA",2018,"Other",450,1736527,25.9
+"SA",2019,"Car, pick-up or van",924,1752681,52.7
+"SA",2019,"Fixed object",354,1752681,20.2
+"SA",2019,"Non-collision",688,1752681,39.3
+"SA",2019,"Other",491,1752681,28
+"SA",2020,"Car, pick-up or van",916,1770277,51.7
+"SA",2020,"Fixed object",381,1770277,21.5
+"SA",2020,"Non-collision",783,1770277,44.2
+"SA",2020,"Other",423,1770277,23.9
+"SA",2021,"Car, pick-up or van",1093,1773243,61.6
+"SA",2021,"Fixed object",418,1773243,23.6
+"SA",2021,"Non-collision",670,1773243,37.8
+"SA",2021,"Other",451,1773243,25.4
+"Tas",2011,"Car, pick-up or van",172,511483,33.6
+"Tas",2011,"Fixed object",85,511483,16.6
+"Tas",2011,"Non-collision",138,511483,27
+"Tas",2011,"Other",98,511483,19.2
+"Tas",2012,"Car, pick-up or van",168,511724,32.8
+"Tas",2012,"Fixed object",72,511724,14.1
+"Tas",2012,"Non-collision",193,511724,37.7
+"Tas",2012,"Other",103,511724,20.1
+"Tas",2013,"Car, pick-up or van",179,512231,34.9
+"Tas",2013,"Fixed object",96,512231,18.7
+"Tas",2013,"Non-collision",196,512231,38.3
+"Tas",2013,"Other",99,512231,19.3
+"Tas",2014,"Car, pick-up or van",203,513621,39.5
+"Tas",2014,"Fixed object",96,513621,18.7
+"Tas",2014,"Non-collision",217,513621,42.2
+"Tas",2014,"Other",130,513621,25.3
+"Tas",2015,"Car, pick-up or van",199,515117,38.6
+"Tas",2015,"Fixed object",131,515117,25.4
+"Tas",2015,"Non-collision",220,515117,42.7
+"Tas",2015,"Other",127,515117,24.7
+"Tas",2016,"Car, pick-up or van",197,517514,38.1
+"Tas",2016,"Fixed object",98,517514,18.9
+"Tas",2016,"Non-collision",227,517514,43.9
+"Tas",2016,"Other",135,517514,26.1
+"Tas",2017,"Car, pick-up or van",212,522410,40.6
+"Tas",2017,"Fixed object",110,522410,21.1
+"Tas",2017,"Non-collision",234,522410,44.8
+"Tas",2017,"Other",103,522410,19.7
+"Tas",2018,"Car, pick-up or van",254,528298,48.1
+"Tas",2018,"Fixed object",115,528298,21.8
+"Tas",2018,"Non-collision",294,528298,55.7
+"Tas",2018,"Other",118,528298,22.3
+"Tas",2019,"Car, pick-up or van",223,534575,41.7
+"Tas",2019,"Fixed object",115,534575,21.5
+"Tas",2019,"Non-collision",213,534575,39.8
+"Tas",2019,"Other",157,534575,29.4
+"Tas",2020,"Car, pick-up or van",233,540536,43.1
+"Tas",2020,"Fixed object",110,540536,20.4
+"Tas",2020,"Non-collision",290,540536,53.7
+"Tas",2020,"Other",145,540536,26.8
+"Tas",2021,"Car, pick-up or van",294,541479,54.3
+"Tas",2021,"Fixed object",134,541479,24.7
+"Tas",2021,"Non-collision",241,541479,44.5
+"Tas",2021,"Other",136,541479,25.1
+"Vic",2011,"Car, pick-up or van",4308,5537817,77.8
+"Vic",2011,"Fixed object",1407,5537817,25.4
+"Vic",2011,"Non-collision",1975,5537817,35.7
+"Vic",2011,"Other",1636,5537817,29.5
+"Vic",2012,"Car, pick-up or van",3730,5651091,66
+"Vic",2012,"Fixed object",1218,5651091,21.6
+"Vic",2012,"Non-collision",1695,5651091,30
+"Vic",2012,"Other",1455,5651091,25.7
+"Vic",2013,"Car, pick-up or van",3438,5772669,59.6
+"Vic",2013,"Fixed object",1177,5772669,20.4
+"Vic",2013,"Non-collision",1751,5772669,30.3
+"Vic",2013,"Other",1418,5772669,24.6
+"Vic",2014,"Car, pick-up or van",3757,5894917,63.7
+"Vic",2014,"Fixed object",1268,5894917,21.5
+"Vic",2014,"Non-collision",1980,5894917,33.6
+"Vic",2014,"Other",1518,5894917,25.8
+"Vic",2015,"Car, pick-up or van",4250,6022322,70.6
+"Vic",2015,"Fixed object",1250,6022322,20.8
+"Vic",2015,"Non-collision",1999,6022322,33.2
+"Vic",2015,"Other",1699,6022322,28.2
+"Vic",2016,"Car, pick-up or van",4918,6173172,79.7
+"Vic",2016,"Fixed object",1415,6173172,22.9
+"Vic",2016,"Non-collision",2174,6173172,35.2
+"Vic",2016,"Other",1853,6173172,30
+"Vic",2017,"Car, pick-up or van",5279,6321606,83.5
+"Vic",2017,"Fixed object",1509,6321606,23.9
+"Vic",2017,"Non-collision",2266,6321606,35.8
+"Vic",2017,"Other",1740,6321606,27.5
+"Vic",2018,"Car, pick-up or van",5675,6462019,87.8
+"Vic",2018,"Fixed object",1607,6462019,24.9
+"Vic",2018,"Non-collision",2309,6462019,35.7
+"Vic",2018,"Other",1862,6462019,28.8
+"Vic",2019,"Car, pick-up or van",5630,6596880,85.3
+"Vic",2019,"Fixed object",1524,6596880,23.1
+"Vic",2019,"Non-collision",2214,6596880,33.6
+"Vic",2019,"Other",2024,6596880,30.7
+"Vic",2020,"Car, pick-up or van",4190,6693858,62.6
+"Vic",2020,"Fixed object",1348,6693858,20.1
+"Vic",2020,"Non-collision",2477,6693858,37
+"Vic",2020,"Other",1869,6693858,27.9
+"Vic",2021,"Car, pick-up or van",4984,6649159,75
+"Vic",2021,"Fixed object",1474,6649159,22.2
+"Vic",2021,"Non-collision",2674,6649159,40.2
+"Vic",2021,"Other",1998,6649159,30
+"WA",2011,"Car, pick-up or van",1309,2353409,55.6
+"WA",2011,"Fixed object",493,2353409,20.9
+"WA",2011,"Non-collision",1012,2353409,43
+"WA",2011,"Other",628,2353409,26.7
+"WA",2012,"Car, pick-up or van",1252,2425507,51.6
+"WA",2012,"Fixed object",444,2425507,18.3
+"WA",2012,"Non-collision",1124,2425507,46.3
+"WA",2012,"Other",673,2425507,27.7
+"WA",2013,"Car, pick-up or van",1241,2486944,49.9
+"WA",2013,"Fixed object",460,2486944,18.5
+"WA",2013,"Non-collision",1048,2486944,42.1
+"WA",2013,"Other",726,2486944,29.2
+"WA",2014,"Car, pick-up or van",1040,2517608,41.3
+"WA",2014,"Fixed object",439,2517608,17.4
+"WA",2014,"Non-collision",1015,2517608,40.3
+"WA",2014,"Other",660,2517608,26.2
+"WA",2015,"Car, pick-up or van",1100,2540672,43.3
+"WA",2015,"Fixed object",459,2540672,18.1
+"WA",2015,"Non-collision",973,2540672,38.3
+"WA",2015,"Other",651,2540672,25.6
+"WA",2016,"Car, pick-up or van",1086,2555978,42.5
+"WA",2016,"Fixed object",410,2555978,16
+"WA",2016,"Non-collision",892,2555978,34.9
+"WA",2016,"Other",643,2555978,25.2
+"WA",2017,"Car, pick-up or van",1091,2574193,42.4
+"WA",2017,"Fixed object",436,2574193,16.9
+"WA",2017,"Non-collision",969,2574193,37.6
+"WA",2017,"Other",699,2574193,27.2
+"WA",2018,"Car, pick-up or van",1179,2594181,45.4
+"WA",2018,"Fixed object",458,2594181,17.7
+"WA",2018,"Non-collision",958,2594181,36.9
+"WA",2018,"Other",679,2594181,26.2
+"WA",2019,"Car, pick-up or van",1270,2623259,48.4
+"WA",2019,"Fixed object",512,2623259,19.5
+"WA",2019,"Non-collision",1068,2623259,40.7
+"WA",2019,"Other",684,2623259,26.1
+"WA",2020,"Car, pick-up or van",1163,2664212,43.7
+"WA",2020,"Fixed object",585,2664212,22
+"WA",2020,"Non-collision",1171,2664212,44
+"WA",2020,"Other",717,2664212,26.9
+"WA",2021,"Car, pick-up or van",1314,2681633,49
+"WA",2021,"Fixed object",517,2681633,19.3
+"WA",2021,"Non-collision",1054,2681633,39.3
+"WA",2021,"Other",683,2681633,25.5

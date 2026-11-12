@@ -1,0 +1,441 @@
+"State","Year","Cases","RoadUserGroup","Populations","Rate"
+"ACT",2011,198,"Car occupant",367985,53.8
+"ACT",2011,144,"Motorcyclist",367985,39.1
+"ACT",2011,16,"Other road users",367985,4.3
+"ACT",2011,149,"Pedal cyclist",367985,40.5
+"ACT",2011,30,"Pedestrian",367985,8.2
+"ACT",2012,237,"Car occupant",376539,62.9
+"ACT",2012,144,"Motorcyclist",376539,38.2
+"ACT",2012,20,"Other road users",376539,5.3
+"ACT",2012,173,"Pedal cyclist",376539,45.9
+"ACT",2012,27,"Pedestrian",376539,7.2
+"ACT",2013,212,"Car occupant",383257,55.3
+"ACT",2013,137,"Motorcyclist",383257,35.7
+"ACT",2013,17,"Other road users",383257,4.4
+"ACT",2013,174,"Pedal cyclist",383257,45.4
+"ACT",2013,33,"Pedestrian",383257,8.6
+"ACT",2014,232,"Car occupant",388799,59.7
+"ACT",2014,102,"Motorcyclist",388799,26.2
+"ACT",2014,9,"Other road users",388799,2.3
+"ACT",2014,179,"Pedal cyclist",388799,46
+"ACT",2014,20,"Pedestrian",388799,5.1
+"ACT",2015,275,"Car occupant",395813,69.5
+"ACT",2015,145,"Motorcyclist",395813,36.6
+"ACT",2015,31,"Other road users",395813,7.8
+"ACT",2015,222,"Pedal cyclist",395813,56.1
+"ACT",2015,27,"Pedestrian",395813,6.8
+"ACT",2016,250,"Car occupant",403104,62
+"ACT",2016,147,"Motorcyclist",403104,36.5
+"ACT",2016,14,"Other road users",403104,3.5
+"ACT",2016,215,"Pedal cyclist",403104,53.3
+"ACT",2016,28,"Pedestrian",403104,6.9
+"ACT",2017,250,"Car occupant",412025,60.7
+"ACT",2017,119,"Motorcyclist",412025,28.9
+"ACT",2017,18,"Other road users",412025,4.4
+"ACT",2017,211,"Pedal cyclist",412025,51.2
+"ACT",2017,34,"Pedestrian",412025,8.3
+"ACT",2018,287,"Car occupant",420379,68.3
+"ACT",2018,161,"Motorcyclist",420379,38.3
+"ACT",2018,23,"Other road users",420379,5.5
+"ACT",2018,217,"Pedal cyclist",420379,51.6
+"ACT",2018,24,"Pedestrian",420379,5.7
+"ACT",2019,279,"Car occupant",426285,65.4
+"ACT",2019,136,"Motorcyclist",426285,31.9
+"ACT",2019,10,"Other road users",426285,2.3
+"ACT",2019,218,"Pedal cyclist",426285,51.1
+"ACT",2019,22,"Pedestrian",426285,5.2
+"ACT",2020,230,"Car occupant",431213,53.3
+"ACT",2020,142,"Motorcyclist",431213,32.9
+"ACT",2020,20,"Other road users",431213,4.6
+"ACT",2020,223,"Pedal cyclist",431213,51.7
+"ACT",2020,14,"Pedestrian",431213,3.2
+"ACT",2021,234,"Car occupant",432266,54.1
+"ACT",2021,144,"Motorcyclist",432266,33.3
+"ACT",2021,7,"Other road users",432266,1.6
+"ACT",2021,333,"Pedal cyclist",432266,77
+"ACT",2021,22,"Pedestrian",432266,5.1
+"NSW",2011,5285,"Car occupant",7218529,73.2
+"NSW",2011,2393,"Motorcyclist",7218529,33.2
+"NSW",2011,486,"Other road users",7218529,6.7
+"NSW",2011,1487,"Pedal cyclist",7218529,20.6
+"NSW",2011,967,"Pedestrian",7218529,13.4
+"NSW",2012,5423,"Car occupant",7304244,74.2
+"NSW",2012,2626,"Motorcyclist",7304244,36
+"NSW",2012,450,"Other road users",7304244,6.2
+"NSW",2012,1667,"Pedal cyclist",7304244,22.8
+"NSW",2012,955,"Pedestrian",7304244,13.1
+"NSW",2013,5585,"Car occupant",7404032,75.4
+"NSW",2013,2570,"Motorcyclist",7404032,34.7
+"NSW",2013,438,"Other road users",7404032,5.9
+"NSW",2013,1835,"Pedal cyclist",7404032,24.8
+"NSW",2013,993,"Pedestrian",7404032,13.4
+"NSW",2014,5319,"Car occupant",7508353,70.8
+"NSW",2014,2636,"Motorcyclist",7508353,35.1
+"NSW",2014,456,"Other road users",7508353,6.1
+"NSW",2014,1902,"Pedal cyclist",7508353,25.3
+"NSW",2014,1000,"Pedestrian",7508353,13.3
+"NSW",2015,5428,"Car occupant",7616168,71.3
+"NSW",2015,2459,"Motorcyclist",7616168,32.3
+"NSW",2015,453,"Other road users",7616168,5.9
+"NSW",2015,1793,"Pedal cyclist",7616168,23.5
+"NSW",2015,951,"Pedestrian",7616168,12.5
+"NSW",2016,5639,"Car occupant",7732858,72.9
+"NSW",2016,2648,"Motorcyclist",7732858,34.2
+"NSW",2016,448,"Other road users",7732858,5.8
+"NSW",2016,1775,"Pedal cyclist",7732858,23
+"NSW",2016,964,"Pedestrian",7732858,12.5
+"NSW",2017,5295,"Car occupant",7867936,67.3
+"NSW",2017,2526,"Motorcyclist",7867936,32.1
+"NSW",2017,475,"Other road users",7867936,6
+"NSW",2017,1791,"Pedal cyclist",7867936,22.8
+"NSW",2017,929,"Pedestrian",7867936,11.8
+"NSW",2018,4469,"Car occupant",7980168,56
+"NSW",2018,2347,"Motorcyclist",7980168,29.4
+"NSW",2018,474,"Other road users",7980168,5.9
+"NSW",2018,1681,"Pedal cyclist",7980168,21.1
+"NSW",2018,823,"Pedestrian",7980168,10.3
+"NSW",2019,4397,"Car occupant",8087379,54.4
+"NSW",2019,2565,"Motorcyclist",8087379,31.7
+"NSW",2019,444,"Other road users",8087379,5.5
+"NSW",2019,1678,"Pedal cyclist",8087379,20.7
+"NSW",2019,858,"Pedestrian",8087379,10.6
+"NSW",2020,3924,"Car occupant",8167024,48
+"NSW",2020,2335,"Motorcyclist",8167024,28.6
+"NSW",2020,405,"Other road users",8167024,5
+"NSW",2020,1950,"Pedal cyclist",8167024,23.9
+"NSW",2020,660,"Pedestrian",8167024,8.1
+"NSW",2021,3669,"Car occupant",8189266,44.8
+"NSW",2021,2253,"Motorcyclist",8189266,27.5
+"NSW",2021,390,"Other road users",8189266,4.8
+"NSW",2021,2042,"Pedal cyclist",8189266,24.9
+"NSW",2021,649,"Pedestrian",8189266,7.9
+"NT",2011,209,"Car occupant",231292,90.4
+"NT",2011,106,"Motorcyclist",231292,45.8
+"NT",2011,35,"Other road users",231292,15.1
+"NT",2011,62,"Pedal cyclist",231292,26.8
+"NT",2011,44,"Pedestrian",231292,19
+"NT",2012,247,"Car occupant",235915,104.7
+"NT",2012,118,"Motorcyclist",235915,50
+"NT",2012,35,"Other road users",235915,14.8
+"NT",2012,45,"Pedal cyclist",235915,19.1
+"NT",2012,51,"Pedestrian",235915,21.6
+"NT",2013,296,"Car occupant",241722,122.5
+"NT",2013,121,"Motorcyclist",241722,50.1
+"NT",2013,32,"Other road users",241722,13.2
+"NT",2013,70,"Pedal cyclist",241722,29
+"NT",2013,42,"Pedestrian",241722,17.4
+"NT",2014,276,"Car occupant",242894,113.6
+"NT",2014,150,"Motorcyclist",242894,61.8
+"NT",2014,25,"Other road users",242894,10.3
+"NT",2014,65,"Pedal cyclist",242894,26.8
+"NT",2014,59,"Pedestrian",242894,24.3
+"NT",2015,335,"Car occupant",244692,136.9
+"NT",2015,169,"Motorcyclist",244692,69.1
+"NT",2015,35,"Other road users",244692,14.3
+"NT",2015,81,"Pedal cyclist",244692,33.1
+"NT",2015,71,"Pedestrian",244692,29
+"NT",2016,374,"Car occupant",245678,152.2
+"NT",2016,151,"Motorcyclist",245678,61.5
+"NT",2016,55,"Other road users",245678,22.4
+"NT",2016,70,"Pedal cyclist",245678,28.5
+"NT",2016,59,"Pedestrian",245678,24
+"NT",2017,366,"Car occupant",247517,147.9
+"NT",2017,149,"Motorcyclist",247517,60.2
+"NT",2017,35,"Other road users",247517,14.1
+"NT",2017,74,"Pedal cyclist",247517,29.9
+"NT",2017,79,"Pedestrian",247517,31.9
+"NT",2018,488,"Car occupant",247058,197.5
+"NT",2018,169,"Motorcyclist",247058,68.4
+"NT",2018,31,"Other road users",247058,12.5
+"NT",2018,71,"Pedal cyclist",247058,28.7
+"NT",2018,73,"Pedestrian",247058,29.5
+"NT",2019,347,"Car occupant",246143,141
+"NT",2019,153,"Motorcyclist",246143,62.2
+"NT",2019,34,"Other road users",246143,13.8
+"NT",2019,84,"Pedal cyclist",246143,34.1
+"NT",2019,38,"Pedestrian",246143,15.4
+"NT",2020,385,"Car occupant",246235,156.4
+"NT",2020,195,"Motorcyclist",246235,79.2
+"NT",2020,43,"Other road users",246235,17.5
+"NT",2020,108,"Pedal cyclist",246235,43.9
+"NT",2020,56,"Pedestrian",246235,22.7
+"NT",2021,362,"Car occupant",246338,147
+"NT",2021,157,"Motorcyclist",246338,63.7
+"NT",2021,41,"Other road users",246338,16.6
+"NT",2021,92,"Pedal cyclist",246338,37.3
+"NT",2021,58,"Pedestrian",246338,23.5
+"Qld",2011,2768,"Car occupant",4476778,61.8
+"Qld",2011,1781,"Motorcyclist",4476778,39.8
+"Qld",2011,375,"Other road users",4476778,8.4
+"Qld",2011,955,"Pedal cyclist",4476778,21.3
+"Qld",2011,443,"Pedestrian",4476778,9.9
+"Qld",2012,3199,"Car occupant",4568687,70
+"Qld",2012,1776,"Motorcyclist",4568687,38.9
+"Qld",2012,368,"Other road users",4568687,8.1
+"Qld",2012,1054,"Pedal cyclist",4568687,23.1
+"Qld",2012,416,"Pedestrian",4568687,9.1
+"Qld",2013,3658,"Car occupant",4652824,78.6
+"Qld",2013,2047,"Motorcyclist",4652824,44
+"Qld",2013,395,"Other road users",4652824,8.5
+"Qld",2013,1321,"Pedal cyclist",4652824,28.4
+"Qld",2013,400,"Pedestrian",4652824,8.6
+"Qld",2014,3580,"Car occupant",4719653,75.9
+"Qld",2014,2070,"Motorcyclist",4719653,43.9
+"Qld",2014,370,"Other road users",4719653,7.8
+"Qld",2014,1333,"Pedal cyclist",4719653,28.2
+"Qld",2014,372,"Pedestrian",4719653,7.9
+"Qld",2015,4013,"Car occupant",4777692,84
+"Qld",2015,2144,"Motorcyclist",4777692,44.9
+"Qld",2015,344,"Other road users",4777692,7.2
+"Qld",2015,1378,"Pedal cyclist",4777692,28.8
+"Qld",2015,427,"Pedestrian",4777692,8.9
+"Qld",2016,4260,"Car occupant",4845152,87.9
+"Qld",2016,2159,"Motorcyclist",4845152,44.6
+"Qld",2016,386,"Other road users",4845152,8
+"Qld",2016,1442,"Pedal cyclist",4845152,29.8
+"Qld",2016,455,"Pedestrian",4845152,9.4
+"Qld",2017,4559,"Car occupant",4927629,92.5
+"Qld",2017,2208,"Motorcyclist",4927629,44.8
+"Qld",2017,386,"Other road users",4927629,7.8
+"Qld",2017,1542,"Pedal cyclist",4927629,31.3
+"Qld",2017,439,"Pedestrian",4927629,8.9
+"Qld",2018,4823,"Car occupant",5009424,96.3
+"Qld",2018,2320,"Motorcyclist",5009424,46.3
+"Qld",2018,400,"Other road users",5009424,8
+"Qld",2018,1408,"Pedal cyclist",5009424,28.1
+"Qld",2018,430,"Pedestrian",5009424,8.6
+"Qld",2019,4829,"Car occupant",5093884,94.8
+"Qld",2019,2322,"Motorcyclist",5093884,45.6
+"Qld",2019,389,"Other road users",5093884,7.6
+"Qld",2019,1531,"Pedal cyclist",5093884,30.1
+"Qld",2019,444,"Pedestrian",5093884,8.7
+"Qld",2020,4836,"Car occupant",5175245,93.4
+"Qld",2020,2447,"Motorcyclist",5175245,47.3
+"Qld",2020,420,"Other road users",5175245,8.1
+"Qld",2020,1684,"Pedal cyclist",5175245,32.5
+"Qld",2020,414,"Pedestrian",5175245,8
+"Qld",2021,5471,"Car occupant",5221170,104.8
+"Qld",2021,2598,"Motorcyclist",5221170,49.8
+"Qld",2021,426,"Other road users",5221170,8.2
+"Qld",2021,1504,"Pedal cyclist",5221170,28.8
+"Qld",2021,448,"Pedestrian",5221170,8.6
+"SA",2011,1255,"Car occupant",1639614,76.5
+"SA",2011,460,"Motorcyclist",1639614,28.1
+"SA",2011,89,"Other road users",1639614,5.4
+"SA",2011,379,"Pedal cyclist",1639614,23.1
+"SA",2011,176,"Pedestrian",1639614,10.7
+"SA",2012,1133,"Car occupant",1656725,68.4
+"SA",2012,451,"Motorcyclist",1656725,27.2
+"SA",2012,130,"Other road users",1656725,7.8
+"SA",2012,401,"Pedal cyclist",1656725,24.2
+"SA",2012,196,"Pedestrian",1656725,11.8
+"SA",2013,1106,"Car occupant",1671488,66.2
+"SA",2013,455,"Motorcyclist",1671488,27.2
+"SA",2013,88,"Other road users",1671488,5.3
+"SA",2013,400,"Pedal cyclist",1671488,23.9
+"SA",2013,172,"Pedestrian",1671488,10.3
+"SA",2014,1066,"Car occupant",1686945,63.2
+"SA",2014,557,"Motorcyclist",1686945,33
+"SA",2014,102,"Other road users",1686945,6
+"SA",2014,494,"Pedal cyclist",1686945,29.3
+"SA",2014,162,"Pedestrian",1686945,9.6
+"SA",2015,1193,"Car occupant",1700668,70.1
+"SA",2015,549,"Motorcyclist",1700668,32.3
+"SA",2015,87,"Other road users",1700668,5.1
+"SA",2015,517,"Pedal cyclist",1700668,30.4
+"SA",2015,121,"Pedestrian",1700668,7.1
+"SA",2016,1292,"Car occupant",1712843,75.4
+"SA",2016,546,"Motorcyclist",1712843,31.9
+"SA",2016,121,"Other road users",1712843,7.1
+"SA",2016,527,"Pedal cyclist",1712843,30.8
+"SA",2016,168,"Pedestrian",1712843,9.8
+"SA",2017,1151,"Car occupant",1723923,66.8
+"SA",2017,531,"Motorcyclist",1723923,30.8
+"SA",2017,116,"Other road users",1723923,6.7
+"SA",2017,469,"Pedal cyclist",1723923,27.2
+"SA",2017,127,"Pedestrian",1723923,7.4
+"SA",2018,1190,"Car occupant",1736527,68.5
+"SA",2018,559,"Motorcyclist",1736527,32.2
+"SA",2018,96,"Other road users",1736527,5.5
+"SA",2018,496,"Pedal cyclist",1736527,28.6
+"SA",2018,148,"Pedestrian",1736527,8.5
+"SA",2019,1075,"Car occupant",1752681,61.3
+"SA",2019,562,"Motorcyclist",1752681,32.1
+"SA",2019,127,"Other road users",1752681,7.2
+"SA",2019,526,"Pedal cyclist",1752681,30
+"SA",2019,167,"Pedestrian",1752681,9.5
+"SA",2020,1089,"Car occupant",1770277,61.5
+"SA",2020,583,"Motorcyclist",1770277,32.9
+"SA",2020,107,"Other road users",1770277,6
+"SA",2020,593,"Pedal cyclist",1770277,33.5
+"SA",2020,131,"Pedestrian",1770277,7.4
+"SA",2021,1231,"Car occupant",1773243,69.4
+"SA",2021,556,"Motorcyclist",1773243,31.4
+"SA",2021,96,"Other road users",1773243,5.4
+"SA",2021,577,"Pedal cyclist",1773243,32.5
+"SA",2021,172,"Pedestrian",1773243,9.7
+"Tas",2011,225,"Car occupant",511483,44
+"Tas",2011,129,"Motorcyclist",511483,25.2
+"Tas",2011,21,"Other road users",511483,4.1
+"Tas",2011,73,"Pedal cyclist",511483,14.3
+"Tas",2011,45,"Pedestrian",511483,8.8
+"Tas",2012,245,"Car occupant",511724,47.9
+"Tas",2012,124,"Motorcyclist",511724,24.2
+"Tas",2012,25,"Other road users",511724,4.9
+"Tas",2012,91,"Pedal cyclist",511724,17.8
+"Tas",2012,51,"Pedestrian",511724,10
+"Tas",2013,265,"Car occupant",512231,51.7
+"Tas",2013,149,"Motorcyclist",512231,29.1
+"Tas",2013,19,"Other road users",512231,3.7
+"Tas",2013,94,"Pedal cyclist",512231,18.4
+"Tas",2013,43,"Pedestrian",512231,8.4
+"Tas",2014,261,"Car occupant",513621,50.8
+"Tas",2014,204,"Motorcyclist",513621,39.7
+"Tas",2014,25,"Other road users",513621,4.9
+"Tas",2014,111,"Pedal cyclist",513621,21.6
+"Tas",2014,45,"Pedestrian",513621,8.8
+"Tas",2015,325,"Car occupant",515117,63.1
+"Tas",2015,197,"Motorcyclist",515117,38.2
+"Tas",2015,27,"Other road users",515117,5.2
+"Tas",2015,93,"Pedal cyclist",515117,18.1
+"Tas",2015,35,"Pedestrian",515117,6.8
+"Tas",2016,310,"Car occupant",517514,59.9
+"Tas",2016,171,"Motorcyclist",517514,33
+"Tas",2016,39,"Other road users",517514,7.5
+"Tas",2016,96,"Pedal cyclist",517514,18.6
+"Tas",2016,41,"Pedestrian",517514,7.9
+"Tas",2017,310,"Car occupant",522410,59.3
+"Tas",2017,169,"Motorcyclist",522410,32.4
+"Tas",2017,39,"Other road users",522410,7.5
+"Tas",2017,107,"Pedal cyclist",522410,20.5
+"Tas",2017,34,"Pedestrian",522410,6.5
+"Tas",2018,404,"Car occupant",528298,76.5
+"Tas",2018,171,"Motorcyclist",528298,32.4
+"Tas",2018,38,"Other road users",528298,7.2
+"Tas",2018,109,"Pedal cyclist",528298,20.6
+"Tas",2018,59,"Pedestrian",528298,11.2
+"Tas",2019,344,"Car occupant",534575,64.4
+"Tas",2019,148,"Motorcyclist",534575,27.7
+"Tas",2019,42,"Other road users",534575,7.9
+"Tas",2019,121,"Pedal cyclist",534575,22.6
+"Tas",2019,53,"Pedestrian",534575,9.9
+"Tas",2020,378,"Car occupant",540536,69.9
+"Tas",2020,192,"Motorcyclist",540536,35.5
+"Tas",2020,39,"Other road users",540536,7.2
+"Tas",2020,133,"Pedal cyclist",540536,24.6
+"Tas",2020,36,"Pedestrian",540536,6.7
+"Tas",2021,399,"Car occupant",541479,73.7
+"Tas",2021,198,"Motorcyclist",541479,36.6
+"Tas",2021,44,"Other road users",541479,8.1
+"Tas",2021,118,"Pedal cyclist",541479,21.8
+"Tas",2021,46,"Pedestrian",541479,8.5
+"Vic",2011,4861,"Car occupant",5537817,87.8
+"Vic",2011,1622,"Motorcyclist",5537817,29.3
+"Vic",2011,417,"Other road users",5537817,7.5
+"Vic",2011,1687,"Pedal cyclist",5537817,30.5
+"Vic",2011,739,"Pedestrian",5537817,13.3
+"Vic",2012,4062,"Car occupant",5651091,71.9
+"Vic",2012,1505,"Motorcyclist",5651091,26.6
+"Vic",2012,326,"Other road users",5651091,5.8
+"Vic",2012,1530,"Pedal cyclist",5651091,27.1
+"Vic",2012,675,"Pedestrian",5651091,11.9
+"Vic",2013,3689,"Car occupant",5772669,63.9
+"Vic",2013,1521,"Motorcyclist",5772669,26.3
+"Vic",2013,318,"Other road users",5772669,5.5
+"Vic",2013,1583,"Pedal cyclist",5772669,27.4
+"Vic",2013,673,"Pedestrian",5772669,11.7
+"Vic",2014,4070,"Car occupant",5894917,69
+"Vic",2014,1654,"Motorcyclist",5894917,28.1
+"Vic",2014,337,"Other road users",5894917,5.7
+"Vic",2014,1819,"Pedal cyclist",5894917,30.9
+"Vic",2014,643,"Pedestrian",5894917,10.9
+"Vic",2015,4558,"Car occupant",6022322,75.7
+"Vic",2015,1694,"Motorcyclist",6022322,28.1
+"Vic",2015,352,"Other road users",6022322,5.8
+"Vic",2015,1894,"Pedal cyclist",6022322,31.4
+"Vic",2015,700,"Pedestrian",6022322,11.6
+"Vic",2016,5324,"Car occupant",6173172,86.2
+"Vic",2016,1806,"Motorcyclist",6173172,29.3
+"Vic",2016,422,"Other road users",6173172,6.8
+"Vic",2016,2008,"Pedal cyclist",6173172,32.5
+"Vic",2016,800,"Pedestrian",6173172,13
+"Vic",2017,5528,"Car occupant",6321606,87.4
+"Vic",2017,1979,"Motorcyclist",6321606,31.3
+"Vic",2017,412,"Other road users",6321606,6.5
+"Vic",2017,2089,"Pedal cyclist",6321606,33
+"Vic",2017,786,"Pedestrian",6321606,12.4
+"Vic",2018,6099,"Car occupant",6462019,94.4
+"Vic",2018,1944,"Motorcyclist",6462019,30.1
+"Vic",2018,436,"Other road users",6462019,6.7
+"Vic",2018,2144,"Pedal cyclist",6462019,33.2
+"Vic",2018,830,"Pedestrian",6462019,12.8
+"Vic",2019,5996,"Car occupant",6596880,90.9
+"Vic",2019,1939,"Motorcyclist",6596880,29.4
+"Vic",2019,427,"Other road users",6596880,6.5
+"Vic",2019,2215,"Pedal cyclist",6596880,33.6
+"Vic",2019,815,"Pedestrian",6596880,12.4
+"Vic",2020,4661,"Car occupant",6693858,69.6
+"Vic",2020,1682,"Motorcyclist",6693858,25.1
+"Vic",2020,338,"Other road users",6693858,5
+"Vic",2020,2645,"Pedal cyclist",6693858,39.5
+"Vic",2020,558,"Pedestrian",6693858,8.3
+"Vic",2021,5402,"Car occupant",6649159,81.2
+"Vic",2021,1967,"Motorcyclist",6649159,29.6
+"Vic",2021,384,"Other road users",6649159,5.8
+"Vic",2021,2695,"Pedal cyclist",6649159,40.5
+"Vic",2021,682,"Pedestrian",6649159,10.3
+"WA",2011,1616,"Car occupant",2353409,68.7
+"WA",2011,867,"Motorcyclist",2353409,36.8
+"WA",2011,168,"Other road users",2353409,7.1
+"WA",2011,530,"Pedal cyclist",2353409,22.5
+"WA",2011,261,"Pedestrian",2353409,11.1
+"WA",2012,1568,"Car occupant",2425507,64.6
+"WA",2012,909,"Motorcyclist",2425507,37.5
+"WA",2012,187,"Other road users",2425507,7.7
+"WA",2012,587,"Pedal cyclist",2425507,24.2
+"WA",2012,242,"Pedestrian",2425507,10
+"WA",2013,1452,"Car occupant",2486944,58.4
+"WA",2013,958,"Motorcyclist",2486944,38.5
+"WA",2013,145,"Other road users",2486944,5.8
+"WA",2013,675,"Pedal cyclist",2486944,27.1
+"WA",2013,245,"Pedestrian",2486944,9.9
+"WA",2014,1282,"Car occupant",2517608,50.9
+"WA",2014,865,"Motorcyclist",2517608,34.4
+"WA",2014,152,"Other road users",2517608,6
+"WA",2014,657,"Pedal cyclist",2517608,26.1
+"WA",2014,198,"Pedestrian",2517608,7.9
+"WA",2015,1372,"Car occupant",2540672,54
+"WA",2015,842,"Motorcyclist",2540672,33.1
+"WA",2015,144,"Other road users",2540672,5.7
+"WA",2015,621,"Pedal cyclist",2540672,24.4
+"WA",2015,204,"Pedestrian",2540672,8
+"WA",2016,1252,"Car occupant",2555978,49
+"WA",2016,802,"Motorcyclist",2555978,31.4
+"WA",2016,159,"Other road users",2555978,6.2
+"WA",2016,652,"Pedal cyclist",2555978,25.5
+"WA",2016,166,"Pedestrian",2555978,6.5
+"WA",2017,1277,"Car occupant",2574193,49.6
+"WA",2017,931,"Motorcyclist",2574193,36.2
+"WA",2017,156,"Other road users",2574193,6.1
+"WA",2017,637,"Pedal cyclist",2574193,24.7
+"WA",2017,194,"Pedestrian",2574193,7.5
+"WA",2018,1485,"Car occupant",2594181,57.2
+"WA",2018,788,"Motorcyclist",2594181,30.4
+"WA",2018,147,"Other road users",2594181,5.7
+"WA",2018,665,"Pedal cyclist",2594181,25.6
+"WA",2018,189,"Pedestrian",2594181,7.3
+"WA",2019,1540,"Car occupant",2623259,58.7
+"WA",2019,886,"Motorcyclist",2623259,33.8
+"WA",2019,146,"Other road users",2623259,5.6
+"WA",2019,735,"Pedal cyclist",2623259,28
+"WA",2019,227,"Pedestrian",2623259,8.7
+"WA",2020,1498,"Car occupant",2664212,56.2
+"WA",2020,949,"Motorcyclist",2664212,35.6
+"WA",2020,172,"Other road users",2664212,6.5
+"WA",2020,834,"Pedal cyclist",2664212,31.3
+"WA",2020,183,"Pedestrian",2664212,6.9
+"WA",2021,1579,"Car occupant",2681633,58.9
+"WA",2021,882,"Motorcyclist",2681633,32.9
+"WA",2021,183,"Other road users",2681633,6.8
+"WA",2021,704,"Pedal cyclist",2681633,26.3
+"WA",2021,220,"Pedestrian",2681633,8.2
