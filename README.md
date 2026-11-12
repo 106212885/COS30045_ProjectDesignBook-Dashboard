@@ -16,7 +16,7 @@
 - `js/` — Constants, data loaders, page controllers, interactions, and chart modules.
 - `data/Hospitalisations/` — National hospitalisation dataset.
 - `data/First Nations People/` — Five First Nations chart datasets.
-- `data/States & Territories/` — Reserved data folder from the supplied structure.
+- `data/States & Territories/` — Five States and Territories chart datasets.
 
 ## Notes
 
