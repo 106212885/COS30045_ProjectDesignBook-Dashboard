@@ -17,6 +17,7 @@
 
   // ---- helpers ----
   const isRate = ui => ui.measure === "rate";
+  const isAllYears = ui => ui.year === "ALL";
   const val = (D, ui, s, y) => isRate(ui) ? D.rate[s][y] : D.totals[s][y];     // value shown in tiles
   const fv = (ui, v) => isRate(ui) ? f1(v) : fmt(v);
   const unit = ui => isRate(ui) ? " per 100,000" : " cases";
@@ -45,17 +46,22 @@
   function tiles(el, D, ui, onPick, zoom) {
     const { svg, w, h } = svgIn(el, "Small line charts of hospitalisations for each state and territory");
     if (w < 160 || h < 50) return;
-    const n = D.states.length, last = D.years.length - 1, yi = D.years.indexOf(ui.year);
+    const allY = isAllYears(ui), n = D.states.length, last = D.years.length - 1;
+    const yi = allY ? -1 : D.years.indexOf(ui.year);
     const cols = zoom ? 4 : n, rows = zoom ? 3 : 1, gp = zoom ? 10 : 6, px = zoom ? 14 : 8;
     const tw = (w - (cols - 1) * gp) / cols, th = (h - (rows - 1) * gp) / rows;
     D.states.forEach((s, i) => {
       const [col, row] = zoom ? CONFIG.TILES[s] : [i, 0], v = D.years.map(y => val(D, ui, s, y));
+      const headVal = allY ? val(D, ui, s, "ALL") : v[yi];
       const x = d3.scaleLinear([0, last], [px, tw - px]);
       const top = zoom ? 54 : 25, bot = th - (zoom ? 48 : 15);     // zoom leaves room above/below the line for the high/low labels
       const y = d3.scaleLinear(d3.extent(v), [bot, top]);               // own scale per state
+      const ariaVal = allY
+        ? `${fv(ui, headVal)}${isRate(ui) ? " average annual rate" : " total cases"} across ${D.years[0]}–${D.years[last]}`
+        : `${fv(ui, v[yi])}${unit(ui)} in ${ui.year}`;
       const g = svg.append("g").attr("class", "tile").attr("transform", `translate(${col * (tw + gp)},${row * (th + gp)})`)
         .attr("tabindex", 0).attr("role", "button").attr("aria-pressed", ui.state === s)
-        .attr("aria-label", `${D.names[s]}: ${fv(ui, v[yi])}${unit(ui)} in ${ui.year}. Press Enter to filter by this state.`)
+        .attr("aria-label", `${D.names[s]}: ${ariaVal}. Press Enter to filter by this state.`)
         .on("click", () => onPick(s))
         .on("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(s); } });
       g.append("rect").attr("class", "bg").attr("width", tw).attr("height", th).attr("rx", 10)
@@ -65,29 +71,38 @@
         g.append("rect").attr("x", x(k)).attr("y", top - 4).attr("width", x(last) - x(k) + px).attr("height", Math.max(0, bot - top + 8)).attr("fill", C.band); }
       g.append("path").datum(v).attr("fill", "none").attr("stroke", C.navy).attr("stroke-width", zoom ? 2.5 : 2)
         .attr("d", d3.line().x((_, k) => x(k)).y(y));
-      g.append("circle").attr("cx", x(yi)).attr("cy", y(v[yi])).attr("r", zoom ? 6 : 4).attr("fill", C.orange);
+      if (!allY && yi >= 0) {
+        g.append("circle").attr("cx", x(yi)).attr("cy", y(v[yi])).attr("r", zoom ? 6 : 4).attr("fill", C.orange);
+      }
       if (zoom) [[d3.maxIndex(v), -11], [d3.minIndex(v), 19]].forEach(([k, dy]) => {   // zoom view: label highest and lowest year
-        if (k === yi) return;
+        if (!allY && k === yi) return;
         const pxk = x(k), ty = Math.max(40, Math.min(th - 27, y(v[k]) + dy));
         g.append("circle").attr("cx", pxk).attr("cy", y(v[k])).attr("r", 3).attr("fill", C.navy);
         g.append("text").attr("class", "mut").attr("x", pxk).attr("y", ty)
           .attr("text-anchor", pxk < 34 ? "start" : pxk > tw - 34 ? "end" : "middle").text(fv(ui, v[k]));
       });
       g.append("text").attr("x", px).attr("y", zoom ? 22 : 15).style("font-weight", 700).text(s);
-      g.append("text").attr("class", "mut").attr("x", tw - px).attr("y", zoom ? 22 : 15).attr("text-anchor", "end").text(fv(ui, v[yi]));
+      g.append("text").attr("class", "mut").attr("x", tw - px).attr("y", zoom ? 22 : 15).attr("text-anchor", "end").text(fv(ui, headVal));
       g.append("text").attr("class", "mut").attr("x", px).attr("y", th - 5).text(D.years[0]);
       g.append("text").attr("class", "mut").attr("x", tw - px).attr("y", th - 5).attr("text-anchor", "end").text(D.years[last]);
-      hook(g, s, `<b>${D.names[s]}</b><br>${D.years[0]}: ${fv(ui, v[0])}${unit(ui)}<br>${ui.year}: ${fv(ui, v[yi])}${unit(ui)}<br>Change: ${pctF(v[yi] / v[0] - 1)}${hint("Click to filter by this state")}`);
+      const tipHtml = allY
+        ? `<b>${D.names[s]}</b><br>${D.years[0]}–${D.years[last]} ${isRate(ui) ? "avg annual rate" : "total"}: <b>${fv(ui, headVal)}</b>${unit(ui)}<br>${D.years[0]}: ${fv(ui, v[0])}${unit(ui)} · ${D.years[last]}: ${fv(ui, v[last])}${unit(ui)}<br>Change: ${pctF(v[last] / v[0] - 1)}${hint("Click to filter by this state")}`
+        : `<b>${D.names[s]}</b><br>${D.years[0]}: ${fv(ui, v[0])}${unit(ui)}<br>${ui.year}: ${fv(ui, v[yi])}${unit(ui)}<br>Change: ${pctF(v[yi] / v[0] - 1)}${hint("Click to filter by this state")}`;
+      hook(g, s, tipHtml);
     });
     if (zoom) {                                                          // legend in the empty bottom-left corner of the map
       const lg = svg.append("g").attr("transform", `translate(10,${2 * (th + gp) + 30})`);
       lg.append("line").attr("x2", 20).attr("stroke", C.navy).attr("stroke-width", 2.2);
       lg.append("text").attr("class", "mut").attr("x", 28).attr("y", 4).text(isRate(ui) ? "Hospitalisations per 100,000 people" : "Hospitalisations per year");
-      lg.append("circle").attr("cx", 10).attr("cy", 24).attr("r", 5).attr("fill", C.orange);
-      lg.append("text").attr("class", "mut").attr("x", 28).attr("y", 28).text("Selected year");
-      lg.append("rect").attr("y", 42).attr("width", 20).attr("height", 10).attr("fill", C.band);
-      lg.append("text").attr("class", "mut").attr("x", 28).attr("y", 51).text("Break in series: " + Object.entries(CONFIG.BREAKS).map(([s, y]) => `${s} from ${y}`).join(", "));
-      lg.append("text").attr("class", "mut").attr("y", 76).text("Each tile has its own scale.");
+      let nextY = 24;
+      if (!allY) {
+        lg.append("circle").attr("cx", 10).attr("cy", nextY).attr("r", 5).attr("fill", C.orange);
+        lg.append("text").attr("class", "mut").attr("x", 28).attr("y", nextY + 4).text("Selected year");
+        nextY += 18;
+      }
+      lg.append("rect").attr("y", nextY).attr("width", 20).attr("height", 10).attr("fill", C.band);
+      lg.append("text").attr("class", "mut").attr("x", 28).attr("y", nextY + 9).text("Break in series: " + Object.entries(CONFIG.BREAKS).map(([s, y]) => `${s} from ${y}`).join(", "));
+      lg.append("text").attr("class", "mut").attr("y", nextY + 34).text("Each tile has its own scale.");
     }
   }
 
@@ -95,6 +110,7 @@
   function line(el, D, ui, cb, zoom) {
     const { svg, w, h } = svgIn(el, "Line chart of the percentage change in hospitalisations since " + D.years[0] + " for each state");
     if (w < 220 || h < 110) return;
+    const allY = isAllYears(ui);
     const m = { l: 40, r: zoom ? 46 : 36, t: 10, b: zoom ? 24 : 18 }, last = D.years.length - 1, k = isRate(ui) ? "rate" : "cases";
     const P = (s, yr) => D.pct[s][yr][k];
     const all = D.states.flatMap(s => D.years.map(yr => P(s, yr)));
@@ -107,17 +123,19 @@
     D.years.forEach((yr, i) => { if (zoom || i % 2 === 0) svg.append("text").attr("class", "mut").attr("x", x(yr)).attr("y", h - 4).attr("text-anchor", "middle").text(yr); });
     const bw = (x(D.years[last]) - x(D.years[0])) / last;                // one invisible band per year: hover for the year, click to highlight it
     D.years.forEach(yr => {
-      const base = yr === ui.year ? "rgba(48,112,173,.13)" : "rgba(0,0,0,0)";
+      const base = !allY && yr === ui.year ? "rgba(48,112,173,.13)" : "rgba(0,0,0,0)";
       const band = svg.append("rect").attr("x", x(yr) - bw / 2).attr("y", m.t).attr("width", bw).attr("height", h - m.t - m.b).attr("fill", base).style("cursor", "pointer")
         .on("mouseover", e => {
           band.attr("fill", "rgba(48,112,173,.2)");
           const v = D.states.map(s => [s, P(s, yr)]).sort((a, b) => b[1] - a[1]);
-          showTip(e, `<b>${yr}</b><br>Highest: ${v[0][0]} ${pctP(v[0][1])}<br>Lowest: ${v[v.length - 1][0]} ${pctP(v[v.length - 1][1])}${hint("Click to highlight the year")}`);
+          showTip(e, `<b>${yr}</b><br>Highest: ${v[0][0]} ${pctP(v[0][1])}<br>Lowest: ${v[v.length - 1][0]} ${pctP(v[v.length - 1][1])}${hint("Click to highlight the year / click again for all years")}`);
         })
         .on("mousemove", moveTip).on("mouseout", () => { band.attr("fill", base); hideTip(); })
         .on("click", () => cb.pickYear(yr));
     });
-    svg.append("line").attr("x1", x(ui.year)).attr("x2", x(ui.year)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", C.navy).attr("stroke-dasharray", "3 3").attr("pointer-events", "none");
+    if (!allY) {
+      svg.append("line").attr("x1", x(ui.year)).attr("x2", x(ui.year)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", C.navy).attr("stroke-dasharray", "3 3").attr("pointer-events", "none");
+    }
     const ys = D.states.map((s, i) => ({ i, y: y(P(s, D.years[last])) })).sort((a, b) => a.y - b.y);
     ys.forEach((d, i) => { if (i) d.y = Math.max(d.y, ys[i - 1].y + (zoom ? 15 : 12)); });   // nudge end labels apart
     D.states.forEach((s, i) => {
@@ -126,7 +144,9 @@
         .attr("d", d3.line().x(yr => x(yr)).y(yr => y(P(s, yr))));
       g.append("path").datum(D.years).attr("fill", "none").attr("stroke", "rgba(0,0,0,0)").attr("stroke-width", 12)   // wide invisible line = easy to hover
         .attr("d", d3.line().x(yr => x(yr)).y(yr => y(P(s, yr)))).attr("pointer-events", "stroke");
-      g.append("circle").attr("cx", x(ui.year)).attr("cy", y(P(s, ui.year))).attr("r", 3.8).attr("fill", col).attr("pointer-events", "none");
+      if (!allY) {
+        g.append("circle").attr("cx", x(ui.year)).attr("cy", y(P(s, ui.year))).attr("r", 3.8).attr("fill", col).attr("pointer-events", "none");
+      }
       g.append("text").attr("x", x(D.years[last]) + 6).attr("y", ys.find(d => d.i === i).y).attr("dy", "0.35em").style("font-weight", ui.state === s ? 800 : 500).text(s);
       hook(g, s, e => {
         const yr = D.years[Math.max(0, Math.min(last, Math.round(x.invert(d3.pointer(e, svg.node())[0]) - D.years[0])))];
@@ -140,6 +160,7 @@
     const B = CONFIG.BREAKDOWNS[ui.breakdown], data = D.mix[B.file];
     const { svg, w, h } = svgIn(el, `Stacked bars: ${B.title}`);
     if (w < 150 || h < 100) return;
+    const allY = isAllYears(ui), rateLabel = allY ? "Average annual rate" : "Rate";
     const top = 24, rh = Math.min(zoom ? 50 : 40, (h - top - 2) / D.states.length), bh = rh - (zoom ? 11 : 7);
     const x = d3.scaleLinear([0, 1], [40, w - 6]), step = (w - 40) / B.groups.length;
     B.groups.forEach((g, j) => {                                         // legend
@@ -154,7 +175,7 @@
       cells.forEach((c, j) => {
         const sw = x(c.cases / tot) - x(0), share = c.cases / tot * 100;
         hook(svg.append("rect").attr("x", x(a / tot)).attr("y", y).attr("width", Math.max(0, sw - 1)).attr("height", bh).attr("rx", 3).attr("fill", B.colors[j]),
-             s, `<b>${D.names[s]}</b> · ${B.groups[j]}<br>${isRate(ui) ? `Rate: <b>${f1(c.rate)}</b> per 100,000` : `Cases: <b>${fmt(c.cases)}</b>`}<br>Share: <b>${share.toFixed(1)}%</b>${hint("Click to filter by this state")}`, () => onPick(s));
+             s, `<b>${D.names[s]}</b> · ${B.groups[j]}<br>${isRate(ui) ? `${rateLabel}: <b>${f1(c.rate)}</b> per 100,000` : `Cases: <b>${fmt(c.cases)}</b>`}<br>Share: <b>${share.toFixed(1)}%</b>${hint("Click to filter by this state")}`, () => onPick(s));
         if ((zoom || ui.state === s) && sw > 30)                         // % labels: all rows in zoom, else focused state only
           svg.append("text").attr("data-s", s).attr("x", x(a / tot) + sw / 2).attr("y", y + bh / 2 + 4).attr("text-anchor", "middle").attr("pointer-events", "none")
             .style("fill", d3.lab(B.colors[j]).l > 62 ? "#1E293B" : "#fff").style("font-size", "10px").text(Math.round(share) + "%");
@@ -163,40 +184,68 @@
     });
   }
 
-  /* ---------- Graph 4: age group x year heatmap (cases only; hatched = withheld small counts) ---------- */
+  /* ---------- Graph 4: age group x year heatmap + Total column (cases only; hatched = withheld small counts) ---------- */
   function heat(el, D, ui, cb, zoom) {
     const { svg, w, h } = svgIn(el, "Heatmap of hospitalisations by age group and year");
     if (w < 200 || h < 90) return;
-    const A = D.ageGroups, Y = D.years, inc = ui.state ? [ui.state] : D.states;
+    const allY = isAllYears(ui), A = D.ageGroups, Y = D.years, inc = ui.state ? [ui.state] : D.states;
     const cell = (a, yr) => ({ v: d3.sum(inc, s => D.age[s]?.[yr]?.[a]?.cases || 0), np: !!ui.state && D.age[ui.state]?.[yr]?.[a]?.withheld });   // hatch only for a single state (the small withheld counts are negligible in the all-states total)
+    const totCell = a => ({ v: d3.sum(Y, yr => cell(a, yr).v), np: !!ui.state && Y.some(yr => cell(a, yr).np) });
     const max = d3.max(A.flatMap(a => Y.map(yr => cell(a, yr).v))) || 1;
+    const maxTot = d3.max(A.map(a => totCell(a).v)) || 1;
     const color = d3.scaleSequential(d3.interpolateRgbBasis(CONFIG.HEAT)).domain([0, max]);
-    const lw = 40, th = 16, gp = 2, cw = (w - lw) / Y.length, ch = (h - th) / A.length;
+    const totColor = d3.scaleSequential(d3.interpolateRgbBasis(CONFIG.HEAT)).domain([0, maxTot]);
+    const lw = 40, th = 16, gp = 2, totGap = 6;
+    const cw = (w - lw - totGap) / (Y.length + 1), ch = (h - th) / A.length;
+    const totX = lw + Y.length * cw + totGap;
+
     svg.append("defs").append("pattern").attr("id", "st-hatch").attr("width", 6).attr("height", 6).attr("patternUnits", "userSpaceOnUse").attr("patternTransform", "rotate(45)")
       .append("rect").attr("width", 3).attr("height", 6).attr("fill", "rgba(30,41,59,.38)");
-    Y.forEach((yr, j) => svg.append("text").attr("class", "mut").attr("x", lw + j * cw + cw / 2).attr("y", 11).attr("text-anchor", "middle").style("font-weight", yr === ui.year ? 800 : 400)
+
+    Y.forEach((yr, j) => svg.append("text").attr("class", "mut").attr("x", lw + j * cw + cw / 2).attr("y", 11).attr("text-anchor", "middle")
+      .style("font-weight", !allY && yr === ui.year ? 800 : 400)
       .text(cw >= 34 ? yr : "’" + String(yr).slice(2)));
+
+    const totHead = svg.append("text").attr("class", "mut").attr("x", totX + cw / 2).attr("y", 11).attr("text-anchor", "middle")
+      .style("font-weight", 700).text("Total");
+    if (!allY) totHead.style("cursor", "pointer").on("click", () => cb.pickYear(ui.year));
+
     A.forEach((a, i) => {
       svg.append("text").attr("class", "mut").attr("x", lw - 6).attr("y", th + i * ch + ch / 2).attr("dy", "0.35em").attr("text-anchor", "end").text(a);
       Y.forEach((yr, j) => {
         const c = cell(a, yr), g = svg.append("g").style("cursor", "pointer").on("click", () => cb.pickYear(yr))
-          .on("mouseover", e => showTip(e, `<b>${a}</b> · ${yr}<br>Cases: <b>${fmt(c.v)}</b>${c.np ? "<br><i>Includes withheld small counts (n.p.)</i>" : ""}<br>${ui.state ? D.names[ui.state] : "All states"}${hint("Click to highlight the year")}`))
+          .on("mouseover", e => showTip(e, `<b>${a}</b> · ${yr}<br>Cases: <b>${fmt(c.v)}</b>${c.np ? "<br><i>Includes withheld small counts (n.p.)</i>" : ""}<br>${ui.state ? D.names[ui.state] : "All states"}${hint("Click to highlight the year / click again for all years")}`))
           .on("mousemove", moveTip).on("mouseout", hideTip);
         g.append("rect").attr("x", lw + j * cw + gp / 2).attr("y", th + i * ch + gp / 2).attr("width", cw - gp).attr("height", ch - gp).attr("rx", 3).attr("fill", color(c.v));
         if (c.np) g.append("rect").attr("x", lw + j * cw + gp / 2).attr("y", th + i * ch + gp / 2).attr("width", cw - gp).attr("height", ch - gp).attr("rx", 3).attr("fill", "url(#st-hatch)");
-      /*  Comment out this line to close the heatmap show figures
-        if (cw >= 26 && ch >= 14) g.append("text").attr("x", lw + j * cw + cw / 2).attr("y", th + i * ch + ch / 2).attr("dy", "0.35em").attr("text-anchor", "middle")
-          .style("font-size", zoom ? "12px" : "9.5px").style("font-weight", 600).style("fill", c.v / max > 0.5 ? "#fff" : "#1E293B").attr("pointer-events", "none").text(fmt(c.v)); */
       });
+
+      // Total column (all 11 years combined)
+      const tc = totCell(a), tg = svg.append("g")
+        .on("mouseover", e => showTip(e, `<b>${a}</b> · All years (${Y[0]}–${Y.at(-1)})<br>Total cases: <b>${fmt(tc.v)}</b>${tc.np ? "<br><i>Includes withheld small counts (n.p.)</i>" : ""}<br>${ui.state ? D.names[ui.state] : "All states"}${!allY ? hint("Click to return to all years") : ""}`))
+        .on("mousemove", moveTip).on("mouseout", hideTip);
+      if (!allY) tg.style("cursor", "pointer").on("click", () => cb.pickYear(ui.year));
+      tg.append("rect").attr("x", totX + gp / 2).attr("y", th + i * ch + gp / 2).attr("width", cw - gp).attr("height", ch - gp).attr("rx", 3).attr("fill", totColor(tc.v));
+      if (tc.np) tg.append("rect").attr("x", totX + gp / 2).attr("y", th + i * ch + gp / 2).attr("width", cw - gp).attr("height", ch - gp).attr("rx", 3).attr("fill", "url(#st-hatch)");
+      if (cw >= 30 && ch >= 13) {
+        const lbl = (zoom || cw >= 48) ? fmt(tc.v) : (tc.v >= 10000 ? Math.round(tc.v / 1000) + "k" : fmt(tc.v));
+        tg.append("text").attr("x", totX + cw / 2).attr("y", th + i * ch + ch / 2).attr("dy", "0.35em").attr("text-anchor", "middle")
+          .style("font-size", zoom ? "11.5px" : "9px").style("font-weight", 700)
+          .style("fill", tc.v / maxTot > 0.5 ? "#fff" : "#1E293B").attr("pointer-events", "none").text(lbl);
+      }
     });
-    const j = Y.indexOf(ui.year);                                         // outline the selected year's column
-    svg.append("rect").attr("x", lw + j * cw).attr("y", th).attr("width", cw).attr("height", ch * A.length).attr("fill", "none").attr("stroke", C.navy).attr("stroke-width", 2).attr("rx", 3).attr("pointer-events", "none");
+
+    const j = allY ? -1 : Y.indexOf(ui.year);                            // outline the selected year's column
+    if (j >= 0) {
+      svg.append("rect").attr("x", lw + j * cw).attr("y", th).attr("width", cw).attr("height", ch * A.length).attr("fill", "none").attr("stroke", C.navy).attr("stroke-width", 2).attr("rx", 3).attr("pointer-events", "none");
+    }
   }
 
   /* ---------- Graph 5: butterfly chart, female (left) vs male (right), one row per state ---------- */
   function sex(el, D, ui, onPick, zoom) {
     const { svg, w, h } = svgIn(el, "Butterfly chart of hospitalisations by sex for each state");
     if (w < 200 || h < 100) return;
+    const allY = isAllYears(ui), rateLabel = allY ? "Average annual rate" : "Rate";
     const S = CONFIG.SEX, key = isRate(ui) ? "rate" : "cases", top = 22, rh = Math.min(zoom ? 50 : 40, (h - top - 2) / D.states.length), bh = rh - (zoom ? 11 : 7);
     const cx = w / 2, gap = 20, half = cx - gap - 4, labelRoom = zoom ? 52 : 40;
     const max = d3.max(D.states.flatMap(s => ["Female", "Male"].map(g => D.sex[s][ui.year][g][key]))) || 1;
@@ -207,7 +256,7 @@
     svg.append("text").attr("class", "mut").attr("x", cx + gap + 44).attr("y", 12).text("Male");
     D.states.forEach((s, i) => {
       const y = top + i * rh, f = D.sex[s][ui.year].Female, m = D.sex[s][ui.year].Male, tot = f.cases + m.cases;
-      const tipFor = (who, d) => `<b>${D.names[s]}</b> · ${who}<br>Cases: <b>${fmt(d.cases)}</b> (${(d.cases / tot * 100).toFixed(0)}% of cases)<br>Rate: <b>${f1(d.rate)}</b> per 100,000${hint("Click to filter by this state")}`;
+      const tipFor = (who, d) => `<b>${D.names[s]}</b> · ${who}<br>Cases: <b>${fmt(d.cases)}</b> (${(d.cases / tot * 100).toFixed(0)}% of cases)<br>${rateLabel}: <b>${f1(d.rate)}</b> per 100,000${hint("Click to filter by this state")}`;
       hook(svg.append("text").attr("x", cx).attr("y", y + bh / 2 + 4).attr("text-anchor", "middle").style("font-weight", ui.state === s ? 800 : 500).text(s), s, `<b>${D.names[s]}</b>${hint("Click to filter by this state")}`, () => onPick(s));
       [["Female", f, -1], ["Male", m, 1]].forEach(([who, d, dir]) => {
         const v = d[key], L = len(v), x0 = dir < 0 ? cx - gap - L : cx + gap;

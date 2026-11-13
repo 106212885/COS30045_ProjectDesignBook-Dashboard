@@ -28,11 +28,12 @@
     need(cp, ["State", "Year", "CounterpartyGroup", "Cases", "Rate"], F.cp);
     const ageState = ag.length && "State" in ag[0] ? "State" : "States";     // the KNIME export may call it "States"
     need(ag, [ageState, "Year", "AgeGroup", "AgeOrder", "Cases", "Withheld"], F.age);
-    need(sx, ["State", "Year", "Sex", "Cases", "Rate"], F.sex);
+    need(sx, ["State", "Year", "Sex", "Cases", "Populations", "Rate"], F.sex);
 
     const states = CONFIG.STATES.map(s => s.code), names = {};
     CONFIG.STATES.forEach(s => { names[s.code] = s.name; });
     const years = [...new Set(st.map(d => +d.Year))].sort(d3.ascending);
+    const lastYear = years.at(-1);
 
     const totals = {}, rate = {}, pop = {}, pct = {}, aus = {}, sex = {}, age = {};
     st.forEach(d => {
@@ -49,9 +50,42 @@
     const mix = { road: {}, cp: {} };
     rd.forEach(d => put(mix.road, [d.State, +d.Year, d.RoadUserGroup], { cases: +d.Cases, rate: +d.Rate }));
     cp.forEach(d => put(mix.cp, [d.State, +d.Year, d.CounterpartyGroup], { cases: +d.Cases, rate: +d.Rate }));
-    sx.forEach(d => put(sex, [d.State, +d.Year, d.Sex], { cases: +d.Cases, rate: +d.Rate }));
+    sx.forEach(d => put(sex, [d.State, +d.Year, d.Sex], { cases: +d.Cases, pop: +d.Populations, rate: +d.Rate }));
     ag.forEach(d => put(age, [d[ageState], +d.Year, d.AgeGroup], { cases: +d.Cases, withheld: +d.Withheld > 0 }));
     const ageGroups = [...new Map(ag.map(d => [+d.AgeOrder, d.AgeGroup]))].sort((a, b) => a[0] - b[0]).map(d => d[1]);
+
+    // Precompute "ALL" (11-year totals and average annual rates = total cases / total population * 100,000)
+    const ausAllCases = d3.sum(years, y => aus[y].cases);
+    const ausAllPop = d3.sum(years, y => aus[y].pop);
+    aus.ALL = { cases: ausAllCases, pop: ausAllPop, rate: +(ausAllCases / ausAllPop * 100000).toFixed(1) };
+
+    states.forEach(s => {
+      const cAll = d3.sum(years, y => totals[s][y]);
+      const pAll = d3.sum(years, y => pop[s][y]);
+      totals[s].ALL = cAll;
+      pop[s].ALL = pAll;
+      rate[s].ALL = +(cAll / pAll * 100000).toFixed(1);
+      pct[s].ALL = pct[s][lastYear];
+
+      ["road", "cp"].forEach(bKey => {
+        CONFIG.BREAKDOWNS[bKey].groups.forEach(grp => {
+          const gc = d3.sum(years, y => mix[bKey][s][y]?.[grp]?.cases || 0);
+          put(mix[bKey], [s, "ALL", grp], { cases: gc, rate: +(gc / pAll * 100000).toFixed(1) });
+        });
+      });
+
+      ["Female", "Male"].forEach(who => {
+        const sc = d3.sum(years, y => sex[s][y]?.[who]?.cases || 0);
+        const sp = d3.sum(years, y => sex[s][y]?.[who]?.pop || 0);
+        put(sex, [s, "ALL", who], { cases: sc, pop: sp, rate: sp > 0 ? +(sc / sp * 100000).toFixed(1) : 0 });
+      });
+
+      ageGroups.forEach(grp => {
+        const ac = d3.sum(years, y => age[s]?.[y]?.[grp]?.cases || 0);
+        const aw = years.some(y => age[s]?.[y]?.[grp]?.withheld);
+        put(age, [s, "ALL", grp], { cases: ac, withheld: aw });
+      });
+    });
 
     return { years, states, names, totals, rate, pop, pct, aus, mix, sex, age, ageGroups };
   }
