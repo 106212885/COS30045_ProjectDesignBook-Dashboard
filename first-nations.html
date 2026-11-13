@@ -23,7 +23,7 @@
   </div>
   <div class="side-foot">
     <p class="t1">Safer roads.</p><p class="t2">Healthier communities.</p><div class="bar"></div>
-    <p class="src">Source: BITRE, First Nations Hospitalised Injuries, 2011–2021. Counts are not adjusted for population size.</p>
+    <p class="src">Source: BITRE, Hospitalised Injury Data, 2011–2021 (national, traffic crashes only). Counts are not adjusted for population size. Unknown age is excluded from age charts.</p>
   </div>
 </aside>
 
@@ -38,7 +38,6 @@
 
   <section class="card filters" aria-label="Filters">
     <div class="f"><label for="filterYear">Year</label><select id="filterYear"></select></div>
-    <div class="f"><label for="filterState">State / territory (estimated)</label><select id="filterState"></select></div>
     <div class="f"><label for="filterUser">Road user</label><select id="filterUser"></select></div>
     <div class="f"><label for="filterAge">Age group</label><select id="filterAge"></select></div>
   </section>
@@ -81,10 +80,6 @@
     </article>
   </section>
 
-  <section class="info">
-    <div class="card"><h4>Key Insights (First Nations)</h4><ul><li id="insight1"></li><li id="insight2"></li></ul></div>
-    <div class="card"><h4>Data Source &amp; Notes</h4><p>Source: BITRE, First Nations Hospitalised Injuries, 2011–2021 (Worksheets T1, T2, T3), processed in KNIME. Hatched cells are suppressed (n.p.) values, shown as estimates. State and cross-filtered values are estimated by proportional allocation of the published totals.</p></div>
-  </section>
 </main>
 
 <div class="overlay" id="overlay" hidden>
