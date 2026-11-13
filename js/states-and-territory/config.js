@@ -5,7 +5,7 @@
    ===================================================================== */
 (function () {
   const CONFIG = {
-    DATA_DIR: "data/states-and-territory/",          // folder holding the KNIME-exported CSVs
+    DATA_DIR: "data/States & Territories/",          // folder holding the KNIME-exported CSVs
     FILES: {                                          // one file per graph (tags from the KNIME workflow)
       state: "g1_state_year.csv",                    // graph 1 + KPIs
       aus:   "g1_australia_year.csv",                // KPI: Australia total / rate
