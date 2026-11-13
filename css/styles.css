@@ -55,7 +55,7 @@ text{font-family:'Inter',sans-serif;fill:#33455A}.halo{paint-order:stroke;stroke
 .sidebar{position:sticky;top:0;z-index:15;width:100%;height:auto;flex-direction:row;align-items:center;justify-content:flex-start;gap:14px;padding:8px 14px;overflow-x:auto;box-shadow:0 4px 16px rgba(0,43,73,.2)}
 .sidebar>div:first-child{display:flex;align-items:center;gap:16px}.brand{margin:0}.nav{flex-direction:row}
 .nav a{white-space:nowrap;padding:8px 13px;font-size:12px}.side-foot,.sidebar::after{display:none}
-.row1,.row2{grid-template-columns:1fr;height:auto}.row1 .chart,.row2 .chart{height:400px}.row1 .chart:first-child{grid-column:auto}.filters,.kpis{grid-template-columns:1fr 1fr}.f{border-bottom:1px solid var(--line)}}
+.row1,.row2{grid-template-columns:1fr;height:auto}.row1 .chart,.row2 .chart{height:400px}.row1 .chart:first-child{grid-column:auto}.filters,.kpis{grid-template-columns:1fr 1fr}.main:not(.fn) .filters{grid-template-columns:repeat(4,minmax(0,1fr))}.main.fn .filters{grid-template-columns:repeat(3,minmax(0,1fr))}.f{border-bottom:1px solid var(--line)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 .dim{opacity:.18!important}
 .tools{margin-left:auto;display:flex;align-items:center;gap:8px}.tools .seg{margin:0}.tools .legend{margin:0;font-size:10px}
