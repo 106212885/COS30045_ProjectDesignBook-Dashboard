@@ -1,1 +1,48 @@
-/* Accessibility stylesheet reserved by the project structure. */
+/* =====================================================================
+   accessibility.css – Keyboard focus & screen-reader styles
+   ===================================================================== */
+
+/* Skip-to-content button (hidden until user presses Tab) */
+.a11y-skip {
+  position: fixed;
+  left: -9999px;
+  top: 10px;
+  z-index: 999;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #002B49;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  text-decoration: none;
+}
+.a11y-skip:focus {
+  left: 12px;
+  outline: 2px solid #E69F00;
+  outline-offset: 2px;
+}
+
+/* Invisible text box for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Clear highlight border when tabbing onto chart bars, dots, or heatmap cells */
+.body svg .clickable:focus-visible,
+.st-chart svg .clickable:focus-visible {
+  outline: 2px solid #C66526;
+  outline-offset: 2px;
+}
+
+/* White halo behind zoomed dot-plot labels so gridlines never obscure numbers */
+.st-page .halo {
+  paint-order: stroke;
+  stroke: #F8FAFC;
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
