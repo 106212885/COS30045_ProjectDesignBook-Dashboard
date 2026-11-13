@@ -6,7 +6,7 @@
 (function () {
   const CONFIG = ST.CONFIG, C = CONFIG.COLORS;
   const fmt = d3.format(","), f1 = d3.format(",.1f");
-  let focus = null;                                        // state currently focused (cross-highlight)
+  let focus = null;                                        // state currently focused (click-to-filter highlight)
 
   // ---- tooltip: one shared element; every tooltip ends with a "click to ..." hint ----
   const tip = d3.select("body").append("div").attr("class", "st-tooltip").attr("role", "tooltip");
@@ -22,22 +22,21 @@
   const fv = (ui, v) => isRate(ui) ? f1(v) : fmt(v);
   const unit = ui => isRate(ui) ? " per 100,000" : " cases";
   const pctF = v => (v >= 0 ? "+" : "") + (v * 100).toFixed(1) + "%";           // fraction -> text
-  const pctP = v => (v >= 0 ? "+" : "") + v.toFixed(1) + "%";                   // percent -> text
   const svgIn = (el, label) => {                           // empty the container, add an SVG exactly as big as it
     const n = d3.select(el).node(), w = n.clientWidth, h = n.clientHeight;
     const svg = d3.select(el).html("").append("svg").attr("width", w).attr("height", h)
       .attr("viewBox", `0 0 ${w} ${h}`).attr("role", "img").attr("aria-label", label);
     return { svg, w, h };
   };
-  // Fade everything except the chosen state (hover wins over the clicked focus)
-  const dim = hover => { const t = hover || focus;
-    d3.selectAll(".st-page [data-s]").style("opacity", function () { return !t || this.dataset.s === t ? 1 : 0.22; }); };
-  // Hover tooltip + cross-highlight (+ optional click) for an element that belongs to state `s`
+  // Fade everything except the clicked focus state
+  const dim = () => {
+    d3.selectAll(".st-page [data-s]").style("opacity", function () { return !focus || this.dataset.s === focus ? 1 : 0.22; }); };
+  // Hover tooltip (+ optional click) for an element that belongs to state `s`
   const hook = (sel, s, html, onClick) => {
     sel.attr("data-s", s)
-      .on("mouseover", e => { dim(s); showTip(e, typeof html === "function" ? html(e) : html); })
+      .on("mouseover", e => { showTip(e, typeof html === "function" ? html(e) : html); })
       .on("mousemove", e => { if (typeof html === "function") tip.html(html(e)); moveTip(e); })
-      .on("mouseout", () => { dim(null); hideTip(); });
+      .on("mouseout", () => { hideTip(); });
     if (onClick) sel.style("cursor", "pointer").on("click", onClick);
     return sel;
   };
@@ -106,58 +105,172 @@
     }
   }
 
-  /* ---------- Graph 2: line chart of the % change since the first year ---------- */
-  function line(el, D, ui, cb, zoom) {
-    const { svg, w, h } = svgIn(el, "Line chart of the percentage change in hospitalisations since " + D.years[0] + " for each state");
-    if (w < 220 || h < 110) return;
-    const allY = isAllYears(ui);
-    const m = { l: 40, r: zoom ? 46 : 36, t: 10, b: zoom ? 24 : 18 }, last = D.years.length - 1, k = isRate(ui) ? "rate" : "cases";
-    const P = (s, yr) => D.pct[s][yr][k];
-    const all = D.states.flatMap(s => D.years.map(yr => P(s, yr)));
-    const x = d3.scaleLinear([D.years[0], D.years[last]], [m.l, w - m.r]);
-    const y = d3.scaleLinear([Math.min(0, d3.min(all)), Math.max(0, d3.max(all))], [h - m.b, m.t]).nice();
-    y.ticks(zoom ? 6 : 4).forEach(t => {                                  // gridlines + % labels
-      svg.append("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y(t)).attr("y2", y(t)).attr("stroke", t === 0 ? "#94A3B8" : "#E2E8F0");
-      svg.append("text").attr("class", "mut").attr("x", m.l - 6).attr("y", y(t)).attr("dy", "0.35em").attr("text-anchor", "end").text((t > 0 ? "+" : "") + t + "%");
+  /* ---------- Graph 2: Cleveland dot plot with national-average line (4 counterparty panels) ---------- */
+  function cpDot(el, D, ui, onPick, zoom) {
+    const B = CONFIG.BREAKDOWNS.cp, data = D.mix.cp;
+    const { svg, w, h } = svgIn(el, "Dot plot of counterparty shares by state with national average line");
+    if (w < 200 || h < 110) return;
+
+    const allY = isAllYears(ui), rateLabel = allY ? "Average annual rate" : "Rate";
+    const groups = B.groups, labels = B.labels;
+
+    // Precompute state shares & national benchmark share for each counterparty category
+    const stateTot = {};
+    D.states.forEach(s => { stateTot[s] = d3.sum(groups, g => data[s][ui.year][g]?.cases || 0) || 1; });
+    const natTot = d3.sum(D.states, s => stateTot[s]) || 1;
+    const natShare = {};
+    groups.forEach(g => {
+      const catCases = d3.sum(D.states, s => data[s][ui.year][g]?.cases || 0);
+      natShare[g] = catCases / natTot;
     });
-    D.years.forEach((yr, i) => { if (zoom || i % 2 === 0) svg.append("text").attr("class", "mut").attr("x", x(yr)).attr("y", h - 4).attr("text-anchor", "middle").text(yr); });
-    const bw = (x(D.years[last]) - x(D.years[0])) / last;                // one invisible band per year: hover for the year, click to highlight it
-    D.years.forEach(yr => {
-      const base = !allY && yr === ui.year ? "rgba(48,112,173,.13)" : "rgba(0,0,0,0)";
-      const band = svg.append("rect").attr("x", x(yr) - bw / 2).attr("y", m.t).attr("width", bw).attr("height", h - m.t - m.b).attr("fill", base).style("cursor", "pointer")
-        .on("mouseover", e => {
-          band.attr("fill", "rgba(48,112,173,.2)");
-          const v = D.states.map(s => [s, P(s, yr)]).sort((a, b) => b[1] - a[1]);
-          showTip(e, `<b>${yr}</b><br>Highest: ${v[0][0]} ${pctP(v[0][1])}<br>Lowest: ${v[v.length - 1][0]} ${pctP(v[v.length - 1][1])}${hint("Click to highlight the year / click again for all years")}`);
-        })
-        .on("mousemove", moveTip).on("mouseout", () => { band.attr("fill", base); hideTip(); })
-        .on("click", () => cb.pickYear(yr));
-    });
-    if (!allY) {
-      svg.append("line").attr("x1", x(ui.year)).attr("x2", x(ui.year)).attr("y1", m.t).attr("y2", h - m.b).attr("stroke", C.navy).attr("stroke-dasharray", "3 3").attr("pointer-events", "none");
+
+    // Top legend (colourblind-safe: single dot colour + focused state highlight + dashed national line)
+    const legY = 8;
+    svg.append("circle").attr("cx", 6).attr("cy", legY).attr("r", zoom ? 5 : 4).attr("fill", C.blue);
+    svg.append("text").attr("class", "mut").attr("x", 15).attr("y", legY + 3.5).text("State share");
+
+    const natLegX = zoom ? 115 : 88;
+    svg.append("line").attr("x1", natLegX).attr("x2", natLegX).attr("y1", legY - 6).attr("y2", legY + 6)
+      .attr("stroke", C.navy).attr("stroke-width", 1.8).attr("stroke-dasharray", "3 2");
+    svg.append("text").attr("class", "mut").attr("x", natLegX + 7).attr("y", legY + 3.5).text("National average");
+
+    if (ui.state) {
+      const focLegX = zoom ? 255 : 196;
+      svg.append("circle").attr("cx", focLegX).attr("cy", legY).attr("r", zoom ? 5.5 : 4.5)
+        .attr("fill", C.orange).attr("stroke", "#0E2A47").attr("stroke-width", 1.2);
+      svg.append("text").attr("class", "mut").attr("x", focLegX + 9).attr("y", legY + 3.5)
+        .style("font-weight", 700).text(D.names[ui.state]);
     }
-    const ys = D.states.map((s, i) => ({ i, y: y(P(s, D.years[last])) })).sort((a, b) => a.y - b.y);
-    ys.forEach((d, i) => { if (i) d.y = Math.max(d.y, ys[i - 1].y + (zoom ? 15 : 12)); });   // nudge end labels apart
-    D.states.forEach((s, i) => {
-      const col = P(s, D.years[last]) >= 0 ? C.orange : C.blue, g = svg.append("g");
-      g.append("path").datum(D.years).attr("fill", "none").attr("stroke", col).attr("stroke-width", zoom ? 2.8 : 2.2)
-        .attr("d", d3.line().x(yr => x(yr)).y(yr => y(P(s, yr))));
-      g.append("path").datum(D.years).attr("fill", "none").attr("stroke", "rgba(0,0,0,0)").attr("stroke-width", 12)   // wide invisible line = easy to hover
-        .attr("d", d3.line().x(yr => x(yr)).y(yr => y(P(s, yr)))).attr("pointer-events", "stroke");
-      if (!allY) {
-        g.append("circle").attr("cx", x(ui.year)).attr("cy", y(P(s, ui.year))).attr("r", 3.8).attr("fill", col).attr("pointer-events", "none");
+
+    // 4 panels side-by-side (falls back to 2x2 grid on narrow mobile screens < 360px)
+    const cols = w >= 360 ? 4 : 2;
+    const rows = Math.ceil(groups.length / cols);
+    const topY = zoom ? 24 : 20;
+    const labelW = zoom ? 42 : 34;
+    const colGap = zoom ? 12 : 7;
+    const rowGap = zoom ? 14 : 8;
+    const panelW = (w - labelW - (cols - 1) * colGap) / cols;
+    const panelH = (h - topY - (rows - 1) * rowGap) / rows;
+    const headH = zoom ? 34 : 25;
+    const axisH = zoom ? 20 : 14;
+    const padL = zoom ? 10 : 6;
+    const padR = zoom ? 26 : 8;
+
+    // Common x-scale across all 4 panels (0% to 55%)
+    const xMax = 0.55;
+    const ticks = zoom ? [0, 0.15, 0.30, 0.45] : [0, 0.25, 0.50];
+
+    groups.forEach((grp, idx) => {
+      const cIdx = idx % cols, rIdx = Math.floor(idx / cols);
+      const px0 = labelW + cIdx * (panelW + colGap);
+      const py0 = topY + rIdx * (panelH + rowGap);
+      const plotTop = py0 + headH;
+      const plotBot = py0 + panelH - axisH;
+      const rh = Math.max(8, (plotBot - plotTop) / D.states.length);
+
+      // Panel backdrop card
+      svg.append("rect").attr("x", px0).attr("y", py0).attr("width", panelW).attr("height", panelH - axisH + 2)
+        .attr("rx", 7).attr("fill", "#F8FAFC").attr("stroke", "#E2E8F0");
+
+      // Category title + national share reference badge
+      const titleText = (zoom || panelW >= 122) ? grp : labels[idx];
+      svg.append("text").attr("x", px0 + padL).attr("y", py0 + (zoom ? 14 : 11))
+        .style("font-weight", 700).style("font-size", zoom ? "12px" : "9.6px").text(titleText);
+      svg.append("text").attr("class", "mut").attr("x", px0 + padL).attr("y", py0 + (zoom ? 27 : 20.5))
+        .style("font-size", zoom ? "11px" : "8.6px").text(`Avg ${(natShare[grp] * 100).toFixed(1)}%`);
+
+      const x = d3.scaleLinear([0, xMax], [px0 + padL, px0 + panelW - padR]);
+
+      // Vertical gridlines + shared x-axis tick labels
+      ticks.forEach((t, ti) => {
+        const tx = x(t);
+        svg.append("line").attr("x1", tx).attr("x2", tx).attr("y1", plotTop).attr("y2", plotBot)
+          .attr("stroke", t === 0 ? "#CBD5E1" : "#E2E8F0");
+        svg.append("text").attr("class", "mut").attr("x", tx).attr("y", plotBot + (zoom ? 14 : 10.5))
+          .attr("text-anchor", ti === 0 ? "start" : "middle")
+          .style("font-size", zoom ? "11px" : "8.5px").text(Math.round(t * 100) + "%");
+      });
+
+      // State labels along the left column of each row
+      if (cIdx === 0) {
+        D.states.forEach((s, i) => {
+          const cy = plotTop + (i + 0.5) * rh;
+          hook(
+            svg.append("text").attr("x", labelW - 6).attr("y", cy).attr("dy", "0.35em")
+              .attr("text-anchor", "end")
+              .style("font-weight", ui.state === s ? 800 : 500)
+              .style("fill", ui.state === s ? C.orange : "#1E293B")
+              .text(s),
+            s, `<b>${D.names[s]}</b>${hint("Click to filter by this state")}`, () => onPick(s)
+          );
+        });
       }
-      g.append("text").attr("x", x(D.years[last]) + 6).attr("y", ys.find(d => d.i === i).y).attr("dy", "0.35em").style("font-weight", ui.state === s ? 800 : 500).text(s);
-      hook(g, s, e => {
-        const yr = D.years[Math.max(0, Math.min(last, Math.round(x.invert(d3.pointer(e, svg.node())[0]) - D.years[0])))];
-        return `<b>${D.names[s]}</b><br>${yr}: ${pctP(P(s, yr))} since ${D.years[0]}${hint("Click to filter by this state")}`;
-      }, e => { e.stopPropagation(); cb.pickState(s); });
+
+      // Dashed vertical national-average reference line
+      const nx = x(natShare[grp]);
+      svg.append("line").attr("x1", nx).attr("x2", nx).attr("y1", plotTop - 1).attr("y2", plotBot + 1)
+        .attr("stroke", C.navy).attr("stroke-width", zoom ? 2 : 1.5).attr("stroke-dasharray", "3 2.5")
+        .attr("pointer-events", "none");
+
+      // State rows & dots
+      D.states.forEach((s, i) => {
+        const cell = data[s][ui.year][grp] || { cases: 0, rate: 0 };
+        const share = cell.cases / stateTot[s];
+        const cy = plotTop + (i + 0.5) * rh;
+        const dx = x(share);
+        const focused = ui.state === s;
+
+        const g = svg.append("g");
+
+        // Subtle highlight strip behind the focused state's row
+        if (focused) {
+          g.append("rect").attr("x", px0 + 1).attr("y", plotTop + i * rh).attr("width", panelW - 2).attr("height", rh)
+            .attr("fill", "rgba(198,101,38,.09)");
+        }
+
+        // Subtle horizontal row guide
+        g.append("line").attr("x1", px0 + padL).attr("x2", px0 + panelW - padR).attr("y1", cy).attr("y2", cy)
+          .attr("stroke", "#E2E8F0").attr("stroke-width", 0.8);
+
+        // Stem from national-average line to the state dot (shows above/below average immediately)
+        g.append("line").attr("x1", nx).attr("x2", dx).attr("y1", cy).attr("y2", cy)
+          .attr("stroke", focused ? C.orange : "#94A3B8")
+          .attr("stroke-width", focused ? (zoom ? 2.4 : 1.8) : (zoom ? 1.5 : 1.1));
+
+        // Dot (single colourblind-safe blue; focused state highlighted in orange)
+        g.append("circle").attr("cx", dx).attr("cy", cy)
+          .attr("r", focused ? (zoom ? 6.5 : 5) : (zoom ? 5 : 3.8))
+          .attr("fill", focused ? C.orange : C.blue)
+          .attr("stroke", focused ? "#0E2A47" : "#fff")
+          .attr("stroke-width", focused ? 1.4 : 0.8);
+
+        // Direct percentage label next to dots in zoom view
+        if (zoom) {
+          const toRight = dx <= px0 + panelW - padR - 24;
+          g.append("text").attr("class", "mut")
+            .attr("x", toRight ? dx + 8 : dx - 8).attr("y", cy).attr("dy", "0.35em")
+            .attr("text-anchor", toRight ? "start" : "end")
+            .style("font-weight", focused ? 700 : 500)
+            .style("fill", focused ? C.orange : "#475569")
+            .text((share * 100).toFixed(1) + "%");
+        }
+
+        // Full-row invisible hit area so clicking/hovering either the dot or the row works smoothly
+        g.append("rect").attr("x", px0).attr("y", plotTop + i * rh).attr("width", panelW).attr("height", rh)
+          .attr("fill", "rgba(0,0,0,0)");
+
+        const metricLine = isRate(ui)
+          ? `${rateLabel}: <b>${f1(cell.rate)}</b> per 100,000`
+          : `Cases: <b>${fmt(cell.cases)}</b>`;
+        const tipHtml = `<b>${D.names[s]}</b> · ${grp}<br>${metricLine}<br>Share: <b>${(share * 100).toFixed(1)}%</b>${hint("Click to filter by this state")}`;
+        hook(g, s, tipHtml, () => onPick(s));
+      });
     });
   }
 
-  /* ---------- Graph 3: horizontal 100% stacked bars (always shares); groups depend on the switch ---------- */
+  /* ---------- Graph 3: horizontal 100% stacked bars (road user mix, always shares) ---------- */
   function mix(el, D, ui, onPick, zoom) {
-    const B = CONFIG.BREAKDOWNS[ui.breakdown], data = D.mix[B.file];
+    const B = CONFIG.BREAKDOWNS.road, data = D.mix.road;
     const { svg, w, h } = svgIn(el, `Stacked bars: ${B.title}`);
     if (w < 150 || h < 100) return;
     const allY = isAllYears(ui), rateLabel = allY ? "Average annual rate" : "Rate";
@@ -267,5 +380,5 @@
     });
   }
 
-  ST.Charts = { tiles, line, mix, heat, sex, hideTip, setFocus: s => { focus = s; dim(null); } };
+  ST.Charts = { tiles, cpDot, mix, heat, sex, hideTip, setFocus: s => { focus = s; dim(); } };
 })();

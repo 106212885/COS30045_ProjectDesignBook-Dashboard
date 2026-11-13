@@ -5,7 +5,7 @@
 (function () {
   const { CONFIG, Charts, loadData } = ST;
   const fmt = d3.format(","), f1 = d3.format(",.1f");
-  const ui = { year: "ALL", state: null, measure: "cases", breakdown: "road" };   // everything the user can change
+  const ui = { year: "ALL", state: null, measure: "cases" };       // everything the user can change
   let DATA, root, zoomKey = null, zoomTrigger = null;
   const TXT = {};                                                 // current title + note of every chart
   const $ = id => document.getElementById("st-" + id);            // all my ids start with "st-"
@@ -17,7 +17,6 @@
   };
   const expand = (key, label) => `<button class="st-expand" data-z="${key}" aria-label="Zoom in: ${label}" title="Zoom in">${ico(P.zoom)}</button>`;
   const kpi = (i, cls) => `<article class="st-card st-kpi st-${cls}"><div><div class="st-v" id="st-k${i}v">–</div><div class="st-l" id="st-k${i}l"></div><div class="st-s" id="st-k${i}s"></div></div></article>`;
-  const pills = attrs => `<div class="st-pills" ${attrs} role="group" aria-label="Break down by"><button class="st-pill" data-b="road" aria-pressed="true">Road user</button><button class="st-pill" data-b="cp" aria-pressed="false">Counterparty</button></div>`;
   const panel = (key, label, cls = "", tools = "") => {          // notes sit under the title across the full card width (inline for the tile row)
     const note = `<p class="st-note" id="st-n-${key}"></p>`, inline = key === "tiles";
     return `<article class="st-card st-panel ${cls}"><div class="st-head"><div class="st-titlewrap"><h2 id="st-t-${key}"></h2>${inline ? note : ""}</div><div class="st-tools">${tools}${expand(key, label)}</div></div>${inline ? "" : note}<div class="st-chart" id="st-${key}"></div></article>`;
@@ -37,8 +36,8 @@
       <section class="st-kpis" aria-live="polite" aria-label="Key figures">${kpi(1, "k1")}${kpi(2, "k2")}${kpi(3, "k3")}${kpi(4, "k4")}</section>
       ${panel("tiles", "tile row of each state's trend", "st-tilesrow")}
       <section class="st-grid">
-        ${panel("line", "percentage change line chart")}
-        ${panel("mix", "stacked bars by state", "", pills(""))}
+        ${panel("cp", "counterparty share dot plot")}
+        ${panel("mix", "road user stacked bars by state")}
         ${panel("heat", "age group by year heatmap")}
         ${panel("sex", "butterfly chart by sex")}
       </section>
@@ -46,7 +45,7 @@
       <div class="st-zoom" id="st-zoom" role="dialog" aria-modal="true" aria-labelledby="st-zoomTitle" hidden>
         <div class="st-zoom-card">
           <div class="st-zoom-head"><div><h2 id="st-zoomTitle"></h2><p class="st-note" id="st-zoomNote"></p></div>
-            <div class="st-tools">${pills('id="st-zoomPills" hidden')}<button class="st-close" id="st-zoomClose" aria-label="Close zoomed chart">×</button></div></div>
+            <div class="st-tools"><button class="st-close" id="st-zoomClose" aria-label="Close zoomed chart">×</button></div></div>
           <div class="st-chart st-zoomed" id="st-zoomBody"></div>
         </div>
       </div>`;
@@ -57,7 +56,7 @@
   // ---------- 2. the five charts: where they live and how to draw them (zoom = big version) ----------
   const CHARTS = {
     tiles: { el: "#st-tiles", draw: (el, z) => Charts.tiles(el, DATA, ui, pick, z) },
-    line:  { el: "#st-line",  draw: (el, z) => Charts.line(el, DATA, ui, { pickState: pick, pickYear: toggleYear }, z) },
+    cp:    { el: "#st-cp",    draw: (el, z) => Charts.cpDot(el, DATA, ui, pick, z) },
     mix:   { el: "#st-mix",   draw: (el, z) => Charts.mix(el, DATA, ui, pick, z) },
     heat:  { el: "#st-heat",  draw: (el, z) => Charts.heat(el, DATA, ui, { pickYear: toggleYear }, z) },
     sex:   { el: "#st-sex",   draw: (el, z) => Charts.sex(el, DATA, ui, pick, z) }
@@ -67,11 +66,8 @@
   function renderText() {
     const R = ui.measure === "rate", y = ui.year, allY = y === "ALL";
     const y0 = DATA.years[0], y1 = DATA.years.at(-1), period = `${y0}–${y1}`, yrLabel = allY ? period : y;
-    const B = CONFIG.BREAKDOWNS[ui.breakdown], k = R ? "rate" : "cases";
     const brk = Object.entries(CONFIG.BREAKS).map(([s, yr]) => `${s} ${yr}`).join(", ");
-    const ps = DATA.states.map(s => [s, DATA.pct[s][y][k]]).sort((a, b) => b[1] - a[1]);
     const male = d3.sum(DATA.states, s => DATA.sex[s][y].Male.cases), fem = d3.sum(DATA.states, s => DATA.sex[s][y].Female.cases);
-    const fmtPct = v => `${v > 0 ? "+" : ""}${v.toFixed(1)}%`;
 
     TXT.tiles = {
       t: R ? (allY ? `1. Average annual hospitalisation rate by state, ${period} (per 100,000)` : `1. Annual hospitalisation rate by state, ${period} (per 100,000)`)
@@ -80,17 +76,13 @@
         ? `Tile value = ${period} ${R ? "average annual rate" : "total"} · grey band = break in series (${brk}) · own scale per tile`
         : `Dot = selected year · grey band = break in series (${brk}) · own scale per tile`
     };
-    TXT.line = {
-      t: `2. Change in ${R ? "hospitalisation rate" : "hospitalisations"} since ${y0} (%)`,
-      n: allY
-        ? `Overall (${period}): highest ${ps[0][0]} (${fmtPct(ps[0][1])}), lowest ${ps.at(-1)[0]} (${fmtPct(ps.at(-1)[1])}). Click a year to highlight.`
-        : y === y0
-          ? "Choose a later year to see the change."
-          : `By ${y}: highest ${ps[0][0]} (${fmtPct(ps[0][1])}), lowest ${ps.at(-1)[0]} (${fmtPct(ps.at(-1)[1])}).`
+    TXT.cp = {
+      t: `2. ${CONFIG.BREAKDOWNS.cp.title}, ${yrLabel}`,
+      n: CONFIG.BREAKDOWNS.cp.note
     };
     TXT.mix = {
-      t: `3. ${B.title}, ${yrLabel}`,
-      n: B.note
+      t: `3. ${CONFIG.BREAKDOWNS.road.title}, ${yrLabel}`,
+      n: CONFIG.BREAKDOWNS.road.note
     };
     TXT.heat = {
       t: `4. Age group × year heatmap – ${ui.state ? DATA.names[ui.state] : "all states"} (cases)`,
@@ -181,7 +173,6 @@
   function syncControls() {
     $("filterYear").value = String(ui.year); $("filterState").value = ui.state || "ALL";
     root.querySelectorAll(".st-seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.m === ui.measure));
-    root.querySelectorAll(".st-pill").forEach(p => p.setAttribute("aria-pressed", p.dataset.b === ui.breakdown));
   }
   function update() {                                    // redraw everything from `ui`
     syncControls(); renderText(); renderKpis(); drawCharts(); Charts.setFocus(ui.state);
@@ -192,7 +183,6 @@
   // ---------- 3. zoom window (Esc / backdrop / x closes it; Tab stays inside) ----------
   function openZoom(key, trigger) {
     zoomKey = key; zoomTrigger = trigger;
-    $("zoomPills").hidden = key !== "mix";
     $("zoom").hidden = false;
     update(); $("zoomClose").focus();
   }
@@ -258,10 +248,9 @@
       $("filterYear").addEventListener("change", e => { ui.year = e.target.value === "ALL" ? "ALL" : +e.target.value; update(); });
       $("filterState").addEventListener("change", e => { ui.state = e.target.value === "ALL" ? null : e.target.value; update(); });
       root.querySelectorAll(".st-seg button").forEach(b => b.addEventListener("click", () => { ui.measure = b.dataset.m; update(); }));
-      root.querySelectorAll(".st-pill").forEach(p => p.addEventListener("click", () => { ui.breakdown = p.dataset.b; update(); }));
       root.querySelectorAll(".st-expand").forEach(b => b.addEventListener("click", () => openZoom(b.dataset.z, b)));
       const resetBtn = $("reset") || document.getElementById("resetBtn");
-      if (resetBtn) resetBtn.addEventListener("click", () => { ui.year = "ALL"; ui.state = null; ui.measure = "cases"; ui.breakdown = "road"; update(); });
+      if (resetBtn) resetBtn.addEventListener("click", () => { ui.year = "ALL"; ui.state = null; ui.measure = "cases"; update(); });
       $("zoomClose").addEventListener("click", closeZoom);
       $("zoom").addEventListener("click", e => { if (e.target.id === "st-zoom") closeZoom(); });   // click the backdrop
       let raf; const ro = new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { if (!root.hidden) drawCharts(); }); });
