@@ -62,7 +62,7 @@ const FN = {
   /** Apply filters; `skip` = filter keys a chart handles itself (highlight instead of remove). */
   filter(st, skip = []) {
     const ok = (k, v) => skip.includes(k) || st[k] === 'ALL' || st[k] === v;
-    return this.records.filter(r => ok('year', r.y) && ok('state', r.s) && ok('user', r.u) && ok('age', r.a));
+    return this.records.filter(r => ok('year', r.y) && ok('user', r.u) && ok('age', r.a));
   },
   sum: rows => d3.sum(rows, r => r.v)
 };
