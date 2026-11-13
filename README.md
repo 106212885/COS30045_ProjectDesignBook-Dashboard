@@ -1,5 +1,7 @@
 # COS30045 Project Design Dashboard
 
+## Group 13 | TRACE | Chooi Ke Xin (105952915), Tan Qiao En (106212885), Wong Joe Yee (106212966)
+
 ## Run locally
 
 1. Open this folder in Visual Studio Code.
@@ -18,6 +20,3 @@
 - `data/First Nations People/` — Five First Nations chart datasets.
 - `data/States & Territories/` — Five States and Territories chart datasets.
 
-## Notes
-
-The original dashboard content and design have been retained. File paths and script references were updated to match this project's folder and naming conventions. The former `config.js` has been consolidated into `js/constants.js`.
