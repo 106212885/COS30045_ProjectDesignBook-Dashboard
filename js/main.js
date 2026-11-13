@@ -111,8 +111,8 @@ if (document.getElementById('filterSex')) {
     render();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(render, 150); });
   })();
-} else if (document.getElementById('filterState')) {
-  const state = { year: 'ALL', state: 'ALL', user: 'ALL', age: 'ALL' };
+} else if (document.getElementById('chartTrend')) {
+  const state = { year: 'ALL', user: 'ALL', age: 'ALL' };
   const $ = id => document.getElementById(id);
   const act = {
     set(p) { Object.assign(state, p); syncSelects(); render(); },
@@ -122,7 +122,6 @@ if (document.getElementById('filterSex')) {
   /* ---- filters ---- */
   const FILTERS = {
     filterYear: ['year', 'All years (2011–2021)', FN.YEARS],
-    filterState: ['state', 'All states', FN.STATES],
     filterUser: ['user', 'All road users', FN.USERS],
     filterAge: ['age', 'All age groups', FN.AGES]
   };
@@ -135,7 +134,7 @@ if (document.getElementById('filterSex')) {
   }
   function syncSelects() { Object.entries(FILTERS).forEach(([id, [key]]) => { $(id).value = String(state[key]); }); }
 
-  /* ---- KPIs and insights ---- */
+  /* ---- KPIs ---- */
   function renderKpis() {
     const rows = FN.filter(state), n = FN.sum(rows), all = FN.sum(FN.records);
     $('k1v').textContent = R0(n);
@@ -151,11 +150,6 @@ if (document.getElementById('filterSex')) {
     const yrs = new Set(rows.map(r => r.y)).size || 1;
     $('k4v').textContent = R0(n / yrs);
     $('k4s').textContent = n === all ? 'Across 11 years' : `${UI.pct(n / all)} of all cases`;
-    // Key insights (always from the year-unfiltered view so the trend statement stays meaningful)
-    $('insight1').textContent = a ? `Hospitalisations ${b >= a ? 'rose' : 'fell'} from ${R0(a)} (2011) to ${R0(b)} (2021), a ${Math.abs((b / a - 1) * 100).toFixed(1)}% ${b >= a ? 'increase' : 'decrease'} over eleven years.` : 'No cases match the current filters.';
-    const yr = state.year === 'ALL' ? 2021 : state.year, base = d3.sum(FN.AGES, x => FN.ageYear[x][yr]);
-    const yaFn = (FN.ageYear['17-25'][yr] / base * 100).toFixed(1), yaNon = FN.bench['17-25'].non.toFixed(1);
-    $('insight2').textContent = `Young adults (17–25) account for ${yaFn}% of First Nations hospitalisations in ${yr} vs ${yaNon}% for non-Indigenous Australians.`;
   }
 
   /* ---- chart registry (cards and expand modal) ---- */
@@ -197,8 +191,8 @@ if (document.getElementById('filterSex')) {
     document.querySelectorAll('[data-zoom]').forEach(b => b.addEventListener('click', () => openModal(b.dataset.zoom, b)));
     $('modalClose').addEventListener('click', closeModal);
     $('overlay').addEventListener('click', e => { if (e.target === $('overlay')) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (openName) closeModal(); else act.set({ year: 'ALL', state: 'ALL', user: 'ALL', age: 'ALL' }); } });
-    $('resetBtn').addEventListener('click', () => act.set({ year: 'ALL', state: 'ALL', user: 'ALL', age: 'ALL' }));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (openName) closeModal(); else act.set({ year: 'ALL', user: 'ALL', age: 'ALL' }); } });
+    $('resetBtn').addEventListener('click', () => act.set({ year: 'ALL', user: 'ALL', age: 'ALL' }));
     render();
     let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(render, 150); });
   })();
