@@ -20,7 +20,7 @@
   };
   const expand = (key, label) => `<button class="st-expand" data-z="${key}" aria-label="Zoom in: ${label}" title="Zoom in">${ico(P.zoom)}</button>`;
   const kpi = (i, cls, icon) => `<article class="st-card st-kpi st-${cls}"><div class="st-ic">${ico(icon)}</div><div><div class="st-v" id="st-k${i}v">–</div><div class="st-l" id="st-k${i}l"></div><div class="st-s" id="st-k${i}s"></div></div></article>`;
-  const pills = attrs => `<div class="st-pills" ${attrs} role="group" aria-label="Break down by"><button class="st-pill" data-b="road" aria-pressed="true">Road user</button><button class="st-pill" data-b="cp" aria-pressed="false">What the vehicle hit</button></div>`;
+  const pills = attrs => `<div class="st-pills" ${attrs} role="group" aria-label="Break down by"><button class="st-pill" data-b="road" aria-pressed="true">Road user</button><button class="st-pill" data-b="cp" aria-pressed="false">Counterparty</button></div>`;
   const panel = (key, label, cls = "", tools = "") => {          // notes sit under the title across the full card width (inline for the tile row)
     const note = `<p class="st-note" id="st-n-${key}"></p>`, inline = key === "tiles";
     return `<article class="st-card st-panel ${cls}"><div class="st-head"><div class="st-titlewrap"><h2 id="st-t-${key}"></h2>${inline ? note : ""}</div><div class="st-tools">${tools}${expand(key, label)}</div></div>${inline ? "" : note}<div class="st-chart" id="st-${key}"></div></article>`;

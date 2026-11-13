@@ -11,7 +11,7 @@
       aus:   "g1_australia_year.csv",                // KPI: Australia total / rate
       pct:   "g2_pct_change_state_year.csv",         // graph 2
       road:  "g3_road_user_state_year.csv",          // graph 3 (road user)
-      cp:    "g3_counterparty_state_year.csv",       // graph 3 (what the vehicle hit)
+      cp:    "g3_counterparty_state_year.csv",       // graph 3 (counterparty)
       age:   "g4_age_state_year.csv",                // graph 4
       sex:   "g5_sex_state_year.csv"                 // graph 5
     },
@@ -34,7 +34,7 @@
               groups: ["Car occupant", "Motorcyclist", "Pedal cyclist", "Pedestrian", "Other road users"],
               labels: ["Car occupant", "Motorcyclist", "Pedal cyclist", "Pedestrian", "Other"],
               colors: ["#3070AD", "#469C76", "#6FB2E4", "#DCA237", "#C66526"] },
-      cp:   { file: "cp", title: "What the vehicle hit, by state",
+      cp:   { file: "cp", title: "Counterparty mix by state",
               note: "Shares of each state's cases (same in Cases and Rates). Non-collision = nothing hit, e.g. a rollover.",
               groups: ["Car, pick-up or van", "Fixed object", "Non-collision", "Other"],
               labels: ["Car, pick-up or van", "Fixed object", "Non-collision", "Other"],
