@@ -2,7 +2,7 @@ const FNC = {};
 const fs = n => (n * UI.k) + 'px';
 const M = o => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v * UI.k]));
 const hi = (st, k, v) => st[k] === 'ALL' || st[k] === v;
-const BLUE = '#0072B2', ORANGE = '#E69F00';
+const BLUE = '#3070AD', ORANGE = '#C66526';
 const R0 = x => UI.fmt(Math.round(x));
 const grid = (g, sc, len) => { g.selectAll('.tick line').attr('stroke', '#EDF1F6'); };
 

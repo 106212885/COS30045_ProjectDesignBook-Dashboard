@@ -1,4 +1,14 @@
 /* Shared horizontal-bar renderer for age-group and road-user charts. */
+const FN_AGE_COLORS = {
+  '0-7': '#3070AD', '8-16': '#6FB2E4', '17-25': '#469C76',
+  '26-39': '#DCA237', '40-64': '#C66526', '65+': '#C17DA5'
+};
+const FN_USER_COLORS = {
+  'Car driver/passenger': '#3070AD', 'Motorcyclist': '#469C76',
+  'Pedestrian': '#DCA237', 'Pedal cyclist': '#6FB2E4',
+  'Pick-up truck/van': '#C66526', 'Heavy transport': '#0E2A47',
+  'Bus occupant': '#C17DA5'
+};
 function hbar(el, rows, st, act, key, cats, left, label) {
   const stateKey = key === 'a' ? 'age' : 'user';
   const { svg, w, h } = UI.svg(el, label);
@@ -14,7 +24,7 @@ function hbar(el, rows, st, act, key, cats, left, label) {
     .on('mousemove', (e, d) => UI.showTip(e, `<b>${d.c}</b><br>${R0(d.v)} cases (${UI.pct(d.v / tot)})<br><i>Click to filter</i>`))
     .on('mouseleave', UI.hideTip.bind(UI)).on('click', (e, d) => act.toggle(stateKey, d.c))
     .on('keydown', (e, d) => { if (e.key === 'Enter') act.toggle(stateKey, d.c); });
-  b.append('rect').attr('y', d => y(d.c)).attr('height', y.bandwidth()).attr('width', d => Math.max(0, x(d.v))).attr('fill', BLUE).attr('rx', 3);
+  b.append('rect').attr('y', d => y(d.c)).attr('height', y.bandwidth()).attr('width', d => Math.max(0, x(d.v))).attr('fill', d => key === 'a' ? FN_AGE_COLORS[d.c] : FN_USER_COLORS[d.c]).attr('rx', 3);
   b.append('text').attr('x', d => x(d.v) + 5).attr('y', d => y(d.c) + y.bandwidth() / 2).attr('dy', '.35em').style('font-size', fs(10)).style('font-weight', 700).text(d => R0(d.v));
   const top = d3.greatest(data, d => d.v);
   return `${top.c} is the largest group: ${UI.pct(top.v / tot)} of cases.`;

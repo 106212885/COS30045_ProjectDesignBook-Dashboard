@@ -7,7 +7,7 @@ FNC.heat = (el, rows, st, act) => {
   if (!hiV) { UI.empty(svg, w, h); return 'No cases match the current filters.'; }
   const m = M({ t: 16, r: 2, b: 2, l: 36 }), iw = w - m.l - m.r, ih = h - m.t - m.b;
   const x = d3.scaleBand(FN.YEARS, [0, iw]).padding(.05), y = d3.scaleBand(FN.AGES, [0, ih]).padding(.08);
-  const ramp = ['#EAF3FA', '#A8D3EA', '#56B4E9', '#0072B2', '#002B49'], col = d3.scaleSequential(d3.interpolateRgbBasis(ramp)).domain([lo, hiV]);
+  const ramp = ['#EAF3FA', '#A9D0EA', '#6FB2E4', '#3070AD', '#123252'], col = d3.scaleSequential(d3.interpolateRgbBasis(ramp)).domain([lo, hiV]);
   svg.append('defs').html('<pattern id="npHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#E2E8F0"/><rect width="2.5" height="6" fill="#94A3B8"/></pattern>');
   const g = svg.append('g').attr('transform', `translate(${m.l},${m.t})`);
   FN.YEARS.forEach(yr => g.append('text').attr('x', x(yr) + x.bandwidth() / 2).attr('y', -5 * UI.k).attr('text-anchor', 'middle').style('font-size', fs(10)).style('font-weight', hi(st, 'year', yr) ? 700 : 400).text(yr));
